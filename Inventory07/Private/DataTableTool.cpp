@@ -12,7 +12,7 @@ FNavButtonAttr* FDataTableTool::GetNavButtonAttr(FName RowName)
 {
 	if (!NavButtonAttr_DT)
 	{
-		StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("DataTable'/Game/ThirdPersonCPP/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"));
+		NavButtonAttr_DT = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"));
 		check(NavButtonAttr_DT);
 	}
 

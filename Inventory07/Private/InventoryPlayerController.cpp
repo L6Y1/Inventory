@@ -37,7 +37,8 @@ void AInventoryPlayerController::ShowUI()
 	
 	MainUIWidget = CreateWidget(this, WidClass);
 	MainUIWidget->AddToViewport();
-	this->SetInputMode(FInputModeGameAndUI());
+	auto InputMode = FInputModeGameAndUI();
+	this->SetInputMode(InputMode);
 	this->SetShowMouseCursor(true);
 }
 
