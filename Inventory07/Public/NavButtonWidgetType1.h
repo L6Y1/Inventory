@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "NavButtonWidgetType1.generated.h"
 
+class USizeBox;
 class UButton;
 class UTextBlock;
 /**
@@ -17,12 +18,19 @@ class INVENTORY07_API UNavButtonWidgetType1 : public UUserWidget
 {
 	GENERATED_BODY()
 
+	FNavButtonAttr ButtonAttr;
+
 public:
 	UPROPERTY(meta=(BindWidget), BlueprintReadOnly)
 	UTextBlock *ShortCutKeyText;
 	UPROPERTY(meta=(BindWidget), BlueprintReadOnly)
 	UButton *NavButton;
+	UPROPERTY(meta=(BindWidget), BlueprintReadOnly)
+	USizeBox *NavButtonSizeBox;
 
+
+	UFUNCTION()
+	void NavButtonOnClicked();
 	
 	UFUNCTION()
 	void Init(FNavButtonAttr NavButtonAttr);

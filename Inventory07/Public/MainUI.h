@@ -24,4 +24,19 @@ public:
 	
 	UPROPERTY(meta=(BindWidget))
 	UHorizontalBox *NavButtonPanel;
+
+	UPROPERTY(meta=(BindWidget))
+	UNamedSlot *BagWidgetSlot;
+
+	UUserWidget *BagWidget;
+
+	void OpenBagWidget(FName ToggledWidgetLayoutType);
+	void CloseBagWidget();
+	
+	UFUNCTION()
+	void ToggleBagWidgetEvent(FName ToggledWidgetLayoutType);
+	UFUNCTION()
+	void ToggleSettingWidgetEvent(FName ToggledWidgetLayoutType);
+	UFUNCTION()
+	void ToggleShopWidgetEvent(FName ToggledWidgetLayoutType);
 };

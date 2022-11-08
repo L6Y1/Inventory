@@ -17,7 +17,7 @@ class INVENTORY07_API UStructTypes : public UObject
 	
 };
 
-
+// UStruct that contains attributes of navbuttons
 USTRUCT(BlueprintType)
 struct FNavButtonAttr : public FTableRowBase
 {
@@ -43,4 +43,32 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName ToggledWidgetLayoutType;
+};
+
+// UStruct that contains attributes of bag widget type1
+USTRUCT(BlueprintType)
+struct FBagWidgetType1Attr : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector2D BagSize;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TitleName;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TitleBG;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName BagBG;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FName> CloseButtonIcons;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName BagGridType;
+
+
 };

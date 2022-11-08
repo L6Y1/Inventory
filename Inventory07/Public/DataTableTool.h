@@ -27,4 +27,6 @@ class FDataTableTool
 public:
 	// get Button Attributes by button name in data table
 	static FNavButtonAttr* GetNavButtonAttr(FName RowName);
+
+	
 };

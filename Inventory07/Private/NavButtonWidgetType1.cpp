@@ -4,16 +4,30 @@
 #include "NavButtonWidgetType1.h"
 
 #include "Components/Button.h"
+#include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
+#include "Inventory07/GlobalEventManager/GlobalEventManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UNavButtonWidgetType1::Init(FNavButtonAttr NavButtonAttr)
 {
+	this->ButtonAttr = NavButtonAttr;
+	// hide the button before the asset is loaded
+	this->SetVisibility(ESlateVisibility::Collapsed);
+
+	// add function to OnClicked delegate of the button
+	this->NavButton->OnClicked.AddDynamic(this, &UNavButtonWidgetType1::NavButtonOnClicked);
+
+	// set button size
+	NavButtonSizeBox->SetWidthOverride(NavButtonAttr.Size);
+	NavButtonSizeBox->SetHeightOverride(NavButtonAttr.Size);
+	
 	ShortCutKeyText->SetText(FText::FromName(NavButtonAttr.ShortCutKey));
 	ADataAssetMananger::RequestAsyncLoadObjects(
 		this,
 		NavButtonAttr.ButtonIcons,
-		[this, NavButtonAttr](TArray<UObject*> Assets)
+		[this](TArray<UObject*> Assets)
 		{
 			auto *ButtonStyle = &NavButton->WidgetStyle;
 
@@ -32,4 +46,10 @@ void UNavButtonWidgetType1::Init(FNavButtonAttr NavButtonAttr)
 			this->SetVisibility(ESlateVisibility::Visible);
 		}
 		);
+}
+
+void UNavButtonWidgetType1::NavButtonOnClicked()
+{
+	// call delegate
+	FGlobalEventManager::TriggerEvent(ButtonAttr.OnClickedEvent, &ButtonAttr.ToggledWidgetLayoutType);
 }

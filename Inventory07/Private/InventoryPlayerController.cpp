@@ -19,7 +19,11 @@ void AInventoryPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
+	MainUIWidget = CreateWidget(this, WidClass);
+	MainUIWidget->AddToViewport();
+	auto InputMode = FInputModeGameAndUI();
+	this->SetInputMode(InputMode);
+	this->SetShowMouseCursor(true);
 }
 
 void AInventoryPlayerController::SetupInputComponent()
@@ -35,11 +39,11 @@ void AInventoryPlayerController::SetupInputComponent()
 void AInventoryPlayerController::ShowUI()
 {
 	
-	MainUIWidget = CreateWidget(this, WidClass);
-	MainUIWidget->AddToViewport();
-	auto InputMode = FInputModeGameAndUI();
-	this->SetInputMode(InputMode);
-	this->SetShowMouseCursor(true);
+	// MainUIWidget = CreateWidget(this, WidClass);
+	// MainUIWidget->AddToViewport();
+	// auto InputMode = FInputModeGameAndUI();
+	// this->SetInputMode(InputMode);
+	// this->SetShowMouseCursor(true);
 }
 
 void AInventoryPlayerController::FadeUI()

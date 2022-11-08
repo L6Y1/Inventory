@@ -5,27 +5,17 @@
 
 #include "DataTableTool.h"
 #include "StructTypes.h"
+#include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
+#include "Components/NamedSlot.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
+#include "Inventory07/GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UMainUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	// {
-	// 	auto NavButtonWidgetClass = StaticLoadClass(UUserWidget::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/Blueprints/BP_NavButtonWidgetType1.BP_NavButtonWidgetType1_C'"));
-	// 	auto NavButtonWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), NavButtonWidgetClass);
-	// 	auto HorBoxSlot = this->NavButtonPanel->AddChildToHorizontalBox(NavButtonWidget);
-	// 	HorBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
-	// }
-	// {
-	// 	auto NavButtonWidgetClass = StaticLoadClass(UUserWidget::StaticClass(), nullptr, TEXT("WidgetBlueprint'/Game/Blueprints/BP_NavButtonWidgetType1.BP_NavButtonWidgetType1_C'"));
-	// 	auto NavButtonWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), NavButtonWidgetClass);
-	// 	auto HorBoxSlot = this->NavButtonPanel->AddChildToHorizontalBox(NavButtonWidget);
-	// 	HorBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
-	// }
 
 	/*
 	 * first get names(in string) of navigation buttons by GConfig, 
@@ -52,7 +42,12 @@ void UMainUI::NativeConstruct()
 		
 		// create button widget
 		auto NavButtonWidget = CreateWidget(this->GetOwningPlayer(), NavButtonWidgetClass);
-
+		/*
+		 * can also be achieved by doing this:
+		 * auto NavButtonWidget = this->WidgetTree->ConstructWidget<UUserWidget>(NavButtonWidgetClass);
+		 */
+		
+		
 		// some alignment 
 		auto HorBoxSlot = this->NavButtonPanel->AddChildToHorizontalBox(NavButtonWidget);
 		HorBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
@@ -62,6 +57,9 @@ void UMainUI::NativeConstruct()
 		{
 			NavButtonWidget->ProcessEvent(InitFuncPtr, NavButtonAttr);
 		}
+
+		// register delegate to the GlobalEventManager
+		FGlobalEventManager::RegisterEvent(NavButtonAttr->OnClickedEvent, this, NavButtonAttr->OnClickedEvent);
 		
 	}
 	
@@ -70,4 +68,64 @@ void UMainUI::NativeConstruct()
 void UMainUI::NativeDestruct()
 {
 	Super::NativeDestruct();
+}
+
+void UMainUI::OpenBagWidget(FName ToggledWidgetLayoutType)
+{
+	// get BagWidgetClass by ToggledWidgetLayoutType passed by ToggleBagEvent(), using DataAssetManager
+	auto *BagWidgetClass = ADataAssetMananger::RequestSyncLoadClass(this, ToggledWidgetLayoutType);
+	check(BagWidgetClass);
+
+	// construct widget
+	BagWidget = this->WidgetTree->ConstructWidget<UUserWidget>(BagWidgetClass);
+
+	// call Init() by reflection, to init the BagWidget
+	auto InitFuncPtr = BagWidget->FindFunction(FName("Init"));
+	check(InitFuncPtr);
+	if (InitFuncPtr)
+	{
+		// get SkinType of BagWidget by reading config file
+		FString SkinType;
+		GConfig->GetString(
+			TEXT("GameUIInit/MainUI/BagWidget"),
+			TEXT("NavigationButtons"),
+			SkinType,
+			GGameIni
+		);
+		FName SkinTypeName = FName(SkinType);
+		BagWidget->ProcessEvent(InitFuncPtr,&SkinTypeName);
+	}
+
+	
+	
+	// add to slot on MainUI
+	BagWidgetSlot->AddChild(BagWidget);
+}
+
+void UMainUI::CloseBagWidget()
+{
+	BagWidgetSlot->RemoveChild(BagWidget);
+	BagWidget = nullptr;
+}
+
+void UMainUI::ToggleBagWidgetEvent(FName ToggledWidgetLayoutType)
+{
+	if (IsValid(BagWidget))
+	{
+		CloseBagWidget();
+	}
+	else
+	{
+		OpenBagWidget(ToggledWidgetLayoutType);
+	}
+}
+
+void UMainUI::ToggleSettingWidgetEvent(FName ToggledWidgetLayoutType)
+{
+	UKismetSystemLibrary::PrintString(nullptr, *ToggledWidgetLayoutType.ToString());
+}
+
+void UMainUI::ToggleShopWidgetEvent(FName ToggledWidgetLayoutType)
+{
+	UKismetSystemLibrary::PrintString(nullptr, *ToggledWidgetLayoutType.ToString());
 }
