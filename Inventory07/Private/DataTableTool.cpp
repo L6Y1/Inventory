@@ -5,20 +5,41 @@
 #include "StructTypes.h"
 #include "Engine/DataTable.h"
 
-UDataTable* FDataTableTool::NavButtonAttr_DT = nullptr;
+UDataTable* FDataTableTool::DT_NavButtonAttr = nullptr;
+
+UDataTable* FDataTableTool::DT_BagWidgetType1SkinAttr = nullptr;
 
 
 FNavButtonAttr* FDataTableTool::GetNavButtonAttr(FName RowName)
 {
-	if (!NavButtonAttr_DT)
+	if (!DT_NavButtonAttr)
 	{
-		NavButtonAttr_DT = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"));
-		check(NavButtonAttr_DT);
+		DT_NavButtonAttr = LoadObject<UDataTable>(nullptr,
+			TEXT("DataTable'/Game/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"));
+		check(DT_NavButtonAttr);
 	}
 
-	if (NavButtonAttr_DT->GetRowMap().Find(RowName) != nullptr)
+	if (DT_NavButtonAttr->GetRowMap().Find(RowName) != nullptr)
 	{
-		auto Result = NavButtonAttr_DT->FindRow<FNavButtonAttr>(RowName, TEXT("None"), true);
+		auto Result = DT_NavButtonAttr->FindRow<FNavButtonAttr>(RowName, TEXT("None"), true);
+		return Result;
+	}
+	
+	return nullptr;
+}
+
+FBagWidgetType1Attr * FDataTableTool::GetBagWidgetType1Attr(FName RowName)
+{
+	if (!DT_BagWidgetType1SkinAttr)
+	{
+		DT_BagWidgetType1SkinAttr = LoadObject<UDataTable>(nullptr,
+			TEXT("DataTable'/Game/DataTable/DT_FBagWidgetType1AttrTable.DT_FBagWidgetType1AttrTable'"));
+		check(DT_BagWidgetType1SkinAttr);
+	}
+
+	if (DT_BagWidgetType1SkinAttr->GetRowMap().Find(RowName) != nullptr)
+	{
+		auto Result = DT_BagWidgetType1SkinAttr->FindRow<FBagWidgetType1Attr>(RowName, TEXT("None"), true);
 		return Result;
 	}
 	

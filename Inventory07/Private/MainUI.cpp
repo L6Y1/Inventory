@@ -88,25 +88,48 @@ void UMainUI::OpenBagWidget(FName ToggledWidgetLayoutType)
 		FString SkinType;
 		GConfig->GetString(
 			TEXT("GameUIInit/MainUI/BagWidget"),
-			TEXT("NavigationButtons"),
+			TEXT("SkinType"),
 			SkinType,
 			GGameIni
 		);
 		FName SkinTypeName = FName(SkinType);
-		BagWidget->ProcessEvent(InitFuncPtr,&SkinTypeName);
-	}
 
-	
-	
+		struct 
+		{
+			FName SkinTypeName;
+			UUserWidget *Owner;
+			FName CloseFunName;
+		} Params;
+
+		Params.SkinTypeName = SkinTypeName;
+		Params.Owner = this;
+		Params.CloseFunName = FName("CloseBagWidget");
+		
+		BagWidget->ProcessEvent(InitFuncPtr,&Params);
+	}
 	// add to slot on MainUI
 	BagWidgetSlot->AddChild(BagWidget);
 }
 
 void UMainUI::CloseBagWidget()
 {
+	auto *UnInitFuncPtr = BagWidget->FindFunction(FName("UnInit"));
+	if (UnInitFuncPtr)
+	{
+		struct 
+		{
+			UUserWidget *Owner;
+		} Params;
+		Params.Owner = this;
+		BagWidget->ProcessEvent(UnInitFuncPtr, this);
+	}
+	
+	FGlobalEventManager::UnRegisterEvent(FName("CloseBagWidgetEvent"), this);
 	BagWidgetSlot->RemoveChild(BagWidget);
 	BagWidget = nullptr;
 }
+
+
 
 void UMainUI::ToggleBagWidgetEvent(FName ToggledWidgetLayoutType)
 {

@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "DataTableTool.generated.h"
 
+struct FBagWidgetType1Attr;
 class UDataTable;
 struct FNavButtonAttr;
 /**
@@ -22,11 +23,16 @@ class INVENTORY07_API UDataTableTool : public UObject
 class FDataTableTool
 {
 	
-	static UDataTable *NavButtonAttr_DT;
+	static UDataTable *DT_NavButtonAttr;
+	
+	static UDataTable *DT_BagWidgetType1SkinAttr;
 	
 public:
 	// get Button Attributes by button name in data table
 	static FNavButtonAttr* GetNavButtonAttr(FName RowName);
+
+	
+	static FBagWidgetType1Attr* GetBagWidgetType1Attr(FName RowName);
 
 	
 };

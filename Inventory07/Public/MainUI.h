@@ -31,7 +31,11 @@ public:
 	UUserWidget *BagWidget;
 
 	void OpenBagWidget(FName ToggledWidgetLayoutType);
+
+	UFUNCTION()
 	void CloseBagWidget();
+
+	
 	
 	UFUNCTION()
 	void ToggleBagWidgetEvent(FName ToggledWidgetLayoutType);
