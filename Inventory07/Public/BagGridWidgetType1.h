@@ -18,6 +18,9 @@ class INVENTORY07_API UBagGridWidgetType1 : public UUserWidget
 {
 	GENERATED_BODY()
 
+private:
+	int GridIndex;
+
 public:
 	UPROPERTY(meta=(BindWidget))
 	USizeBox *GridSizeBox;
@@ -40,8 +43,16 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	UImage *DotImage;
 
+	// 'Transient' means the property cannot be serialized/deserialized and save to disk 
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation *ZoomAnimation;
 	
+	virtual void NativeOnMouseEnter(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent &InMouseEvent) override;
+
 	
 	UFUNCTION()
 	void Init(int Index);
+
+	void UpdateDisplay(int Index);
 };

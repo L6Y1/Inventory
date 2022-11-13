@@ -7,6 +7,27 @@
 #include "FileTool.generated.h"
 
 
+class FGameSaveTool
+{
+public:
+	static FBagGridData GetBagGridDataByIndex(int GridIndex);
+
+	static bool IsBagHadItem(int ID);
+};
+
+
+class FJsonTool
+{
+private:
+	// JSON to GameSaveData
+	static FGameSaveData GetGameSaveDataFromJsonStr(FString JsonStr);
+
+	// GameSaveData to JSON
+	static FString GetJsonStrFromGameSaveData(FGameSaveData GameSaveData);
+
+	friend class FFileTool;
+};
+
 class FFileTool
 {
 	

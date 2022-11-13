@@ -16,6 +16,42 @@ class INVENTORY07_API UStructTypes : public UObject
 	GENERATED_BODY()
 };
 
+USTRUCT(BlueprintType)
+struct FItemInBagGirdAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FItemInBagGirdAttr(){}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector2D Size;		// grid size
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName BGImage;// background image
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName ItemBorderImage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName ItemImage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int MaxStackNum;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bIsShowNum;	// whether to show num in right down corner
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TipBorderWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TipContextWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName DragWidgetClass;
+};
+
 
 /**
  * @brief Struct that contains attributes of navbuttons
@@ -190,3 +226,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FItemOnGroundData ItemOnGroundData;
 };
+
+

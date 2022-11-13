@@ -9,6 +9,7 @@ UDataTable* FDataTableTool::DT_NavButtonAttr = nullptr;
 
 UDataTable* FDataTableTool::DT_BagWidgetType1SkinAttr = nullptr;
 
+UDataTable* FDataTableTool::DT_FItemInBagGirdAttr = nullptr;
 
 FNavButtonAttr* FDataTableTool::GetNavButtonAttr(FName RowName)
 {
@@ -40,6 +41,24 @@ FBagWidgetType1Attr * FDataTableTool::GetBagWidgetType1Attr(FName RowName)
 	if (DT_BagWidgetType1SkinAttr->GetRowMap().Find(RowName) != nullptr)
 	{
 		auto Result = DT_BagWidgetType1SkinAttr->FindRow<FBagWidgetType1Attr>(RowName, TEXT("None"), true);
+		return Result;
+	}
+	
+	return nullptr;
+}
+
+FItemInBagGirdAttr * FDataTableTool::GetItemInBagGridAttr(FName RowName)
+{
+	if (!DT_FItemInBagGirdAttr)
+	{
+		DT_FItemInBagGirdAttr = LoadObject<UDataTable>(nullptr,
+			TEXT("DataTable'/Game/DataTable/DT_FItemInBagGirdAttrTable.DT_FItemInBagGirdAttrTable'"));
+		check(DT_FItemInBagGirdAttr);
+	}
+
+	if (DT_FItemInBagGirdAttr->GetRowMap().Find(RowName) != nullptr)
+	{
+		auto Result = DT_FItemInBagGirdAttr->FindRow<FItemInBagGirdAttr>(RowName, TEXT("None"), true);
 		return Result;
 	}
 	
