@@ -84,7 +84,8 @@ FGameSaveData FJsonTool::GetGameSaveDataFromJsonStr(FString JsonStr)
 
 		
 		// GameSaveData.ItemOnGround
-		auto ItemOnGroundJsonObj = GameSaveDataJsonObj->GetObjectField(FString("ItemOnGroundJsonObj"));
+		auto ItemOnGroundJsonObj = GameSaveDataJsonObj->GetObjectField(FString("ItemOnGroundData"));
+		
 	}
 
 	// add "JsonUtilities" in build.cs
@@ -226,7 +227,7 @@ FGameSaveData FFileTool::LoadGame(FString RelativePath, FString FileName)
 		PlayerData.BagData = BagData;
 
 		// create ItemOnGroundData
-		// TODO: ItemOnGroundData implement
+		
 
 
 		GameSaveData.PlayerData = PlayerData;
@@ -250,9 +251,42 @@ FBagGridData FGameSaveTool::GetBagGridDataByIndex(int GridIndex)
 	return GameSaveData.PlayerData.BagData.BagGridData[GridIndex];
 }
 
+int FGameSaveTool::GetItemInBagGridTotalNum(int ID)
+{
+	auto BagGridDatas = GetAllBagGridDatas();
+	int TotalNum = 0;
+	for (auto BagGridData : BagGridDatas)
+	{
+		if (BagGridData.ID == ID)
+		{
+			TotalNum += BagGridData.Num;
+		}
+	}
+	return TotalNum;
+}
+
 bool FGameSaveTool::IsBagHadItem(int ID)
 {
 	auto GameSaveData = FFileTool::LoadGame();
 	
 	return GameSaveData.PlayerData.BagData.HadItems.Contains(ID);
+}
+
+void FGameSaveTool::AddViewBagGridItemID(int ID)
+{
+	FGameSaveData GameSaveData = FFileTool::LoadGame();
+	GameSaveData.PlayerData.BagData.HadItems.Add(ID);
+	FFileTool::SaveGame(GameSaveData);
+}
+
+TArray<FBagGridData> FGameSaveTool::GetAllBagGridDatas()
+{
+	return FFileTool::LoadGame().PlayerData.BagData.BagGridData;
+}
+
+void FGameSaveTool::SetBagGridDataByIndex(FBagGridData NewBagGrid, int FoundIndex)
+{
+	auto GameSaveData = FFileTool::LoadGame();
+	GameSaveData.PlayerData.BagData.BagGridData[FoundIndex] = NewBagGrid;
+	FFileTool::SaveGame(GameSaveData);
 }

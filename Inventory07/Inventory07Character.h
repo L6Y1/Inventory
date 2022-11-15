@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Inventory07Character.generated.h"
 
+class UBagComponent;
 UCLASS(config=Game)
 class AInventory07Character : public ACharacter
 {
@@ -18,6 +19,11 @@ class AInventory07Character : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+	
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBagComponent *BagComponent;
+	
 public:
 	AInventory07Character();
 

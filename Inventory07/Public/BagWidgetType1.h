@@ -48,6 +48,9 @@ public:
 
 	UFUNCTION()
 	void OnExitButtonClicked();
+
+	UFUNCTION()
+	void OnSortButtonClicked();
 	
 	UFUNCTION()
 	void Init(FName SkinType, UUserWidget *Owner, FName CloseFunName);

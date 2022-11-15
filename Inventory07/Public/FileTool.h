@@ -11,8 +11,16 @@ class FGameSaveTool
 {
 public:
 	static FBagGridData GetBagGridDataByIndex(int GridIndex);
+	
+	static int GetItemInBagGridTotalNum(int ID);
 
 	static bool IsBagHadItem(int ID);
+
+	// add to already had items
+	static void AddViewBagGridItemID(int ID);
+
+	static TArray<FBagGridData> GetAllBagGridDatas();
+	static void SetBagGridDataByIndex(FBagGridData NewBagGrid, int FoundIndex);
 };
 
 

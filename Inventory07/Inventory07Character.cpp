@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Inventory07Character.h"
+
+#include "BagComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -45,6 +47,9 @@ AInventory07Character::AInventory07Character()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+
+	BagComponent = CreateDefaultSubobject<UBagComponent>(FName("BagComponent"));
 }
 
 //////////////////////////////////////////////////////////////////////////

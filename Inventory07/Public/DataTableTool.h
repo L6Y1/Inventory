@@ -7,6 +7,8 @@
 #include "UObject/NoExportTypes.h"
 #include "DataTableTool.generated.h"
 
+#define IntToName(int) FName(FString::FromInt(ID))
+
 struct FBagWidgetType1Attr;
 class UDataTable;
 struct FNavButtonAttr;

@@ -9,41 +9,41 @@ TSharedPtr<FGlobalEventManager> FGlobalEventManager::Instance = nullptr;
 
 void FGlobalEventManager::RegisterEvent(FName EventName, UObject *Obj, FName FunctionName)
 {
-	if (!FGlobalEventManager::GetInstance()->Events.Contains(EventName))
+	if (!GetInstance()->Events.Contains(EventName))
 	{
 		TArray<FScriptDelegate> Delegates;
 		FScriptDelegate Delegate;
 		
 		Delegate.BindUFunction(Obj, FunctionName);
 		Delegates.Add(Delegate);
-		FGlobalEventManager::GetInstance()->Events.Add(EventName, Delegates);
+		GetInstance()->Events.Add(EventName, Delegates);
 		
 	}
 	else
 	{
 		FScriptDelegate Delegate;
 		Delegate.BindUFunction(Obj, FunctionName);
-		FGlobalEventManager::GetInstance()->Events.Find(EventName)->Add(Delegate);
+		GetInstance()->Events.Find(EventName)->Add(Delegate);
 	}
 }
 
 void FGlobalEventManager::UnRegisterEvent(FName EventName, UObject *Obj)
 {
-	if (FGlobalEventManager::GetInstance()->Events.Contains(EventName))
+	if (GetInstance()->Events.Contains(EventName))
 	{
-		auto Delegates = *FGlobalEventManager::GetInstance()->Events.Find(EventName);
-		for (int i = 0; i < Delegates.Num(); ++i)
+		auto *Delegates = GetInstance()->Events.Find(EventName);
+		for (int i = 0; i < Delegates->Num(); ++i)
 		{
-			if (Delegates[i].GetUObject() == Obj)
+			if ((*Delegates)[i].GetUObject() == Obj)
 			{
-				Delegates[i].Unbind();
-				FGlobalEventManager::GetInstance()->Events.Find(EventName)->RemoveAt(i);
+				(*Delegates)[i].Unbind();
+				GetInstance()->Events.Find(EventName)->RemoveAt(i);
 				--i;
 			}
 		}
-		if (FGlobalEventManager::GetInstance()->Events.Find(EventName)->Num() == 0)
+		if (GetInstance()->Events.Find(EventName)->Num() == 0)
 		{
-			FGlobalEventManager::GetInstance()->Events.Remove(EventName);
+			GetInstance()->Events.Remove(EventName);
 		}
 		
 		
@@ -56,9 +56,9 @@ void FGlobalEventManager::UnRegisterEvent(FName EventName, UObject *Obj)
 
 void FGlobalEventManager::TriggerEvent(FName EventName, void *Params)
 {
-	if (FGlobalEventManager::GetInstance()->Events.Contains(EventName))
+	if (GetInstance()->Events.Contains(EventName))
 	{
-		auto Delegates= *FGlobalEventManager::GetInstance()->Events.Find(EventName);
+		auto Delegates= *GetInstance()->Events.Find(EventName);
 
 		for (auto Delegate : Delegates)
 		{

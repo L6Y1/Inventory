@@ -1,0 +1,57 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "FileTool.h"
+#include "Components/ActorComponent.h"
+#include "BagComponent.generated.h"
+
+
+class FGameSaveTool;
+
+
+/**
+ * @brief
+ */
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class INVENTORY07_API UBagComponent : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:	
+	// Sets default values for this component's properties
+	UBagComponent();
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+public:	
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION()
+	void InspectBagGridItem(int GridIndex);
+
+	UFUNCTION(BlueprintCallable)
+	int AddItem(int ID, int Amount);
+	
+	UFUNCTION(BlueprintCallable)
+	bool SubItem(int ID, int Amount);
+
+	UFUNCTION()
+	void SortGridItem();
+
+	
+	// find the index of grid which contains given id item, that most equal to full grid stack num
+	int FindFreeGridIndex(int ID);
+	// find the index of a empty grid
+	int FindEmptyGridIndex();
+	// find the index of grid which contains given id item, that most not equal to full grid stack num
+	int FindMinNumGrid(int ID);
+};
+
+ 

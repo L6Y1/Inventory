@@ -33,6 +33,10 @@ void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunNam
 	ExitButton->OnClicked.AddDynamic(this, &UBagWidgetType1::OnExitButtonClicked);
 	FGlobalEventManager::RegisterEvent(FName("CloseBagWidgetEvent"), Owner, CloseFunName);
 
+	// register sort button click event
+	SortButton->OnClicked.AddDynamic(this, &UBagWidgetType1::OnSortButtonClicked);
+	
+	
 	// set bag size
 	BagSizeBox->SetWidthOverride(BagWidgetType1Attr->BagSize.X);
 	BagSizeBox->SetHeightOverride(BagWidgetType1Attr->BagSize.Y);
@@ -109,4 +113,9 @@ void UBagWidgetType1::UnInit(UUserWidget *Owner)
 void UBagWidgetType1::OnExitButtonClicked()
 {
 	FGlobalEventManager::TriggerEvent(FName("CloseBagWidgetEvent"), nullptr);
+}
+
+void UBagWidgetType1::OnSortButtonClicked()
+{
+	FGlobalEventManager::TriggerEvent(FName("SortGridItemEvent"), nullptr);
 }
