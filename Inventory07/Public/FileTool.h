@@ -20,7 +20,11 @@ public:
 	static void AddViewBagGridItemID(int ID);
 
 	static TArray<FBagGridData> GetAllBagGridDatas();
+	static void SetAllBagGridDatas(TArray<FBagGridData> NewBagGridDatas);
+	
 	static void SetBagGridDataByIndex(FBagGridData NewBagGrid, int FoundIndex);
+	
+	static TMap<FName, FItemOnGroundData> GetItemOnGroundDatas();
 };
 
 
@@ -46,11 +50,11 @@ public:
 	// read str from file
 	static bool LoadStrFromFile(FString &OutString, FString RelativePath, FString FileName);
 
-	// JSON to GameSaveData
+	// load game
 	static FGameSaveData LoadGame(FString RelativePath = FString("/GameSaves"),
 		FString FileName = FString("SaveGame00.sav"));
 	
-	// GameSaveData to JSON
+	// save game
 	static void SaveGame(FGameSaveData InGameSaveData,
 		FString RelativePath = FString("/GameSaves"),
 		FString FileName = FString("SaveGame00.sav"));

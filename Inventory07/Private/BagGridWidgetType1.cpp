@@ -47,6 +47,8 @@ void UBagGridWidgetType1::NativeConstruct()
 	FGlobalEventManager::RegisterEvent(FName("AddItemOnBagGridEvent"), this, FName("PlayZoomAnimation"));
 	
 	FGlobalEventManager::RegisterEvent(FName("SubItemOnBagGridEvent"), this, FName("UpdateDisplay"));
+	
+	FGlobalEventManager::RegisterEvent(FName("SortCompleteEvent"), this, FName("UpdateDisplay2"));
 }
 
 void UBagGridWidgetType1::NativeDestruct()
@@ -55,6 +57,7 @@ void UBagGridWidgetType1::NativeDestruct()
 	FGlobalEventManager::UnRegisterEvent(FName("ViewBagGridItemFinishedEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("AddItemOnBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SubItemOnBagGridEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("SortCompleteEvent"), this);
 }
 
 void UBagGridWidgetType1::OnViewBagGridItemFinished(int ID)
@@ -74,7 +77,12 @@ void UBagGridWidgetType1::Init(int Index)
 void UBagGridWidgetType1::UpdateDisplay(int Index)
 {
 	if (Index != GridIndex) return;
-	auto BagGridData = FGameSaveTool::GetBagGridDataByIndex(Index);
+	UpdateDisplay2();
+}
+
+void UBagGridWidgetType1::UpdateDisplay2()
+{
+	auto BagGridData = FGameSaveTool::GetBagGridDataByIndex(GridIndex);
 	
 	
 	auto ItemInBagGridAttr =
@@ -123,8 +131,8 @@ void UBagGridWidgetType1::UpdateDisplay(int Index)
 	}
 	
 	
-	 DotImage->SetVisibility((BagGridData.ID == 0 || FGameSaveTool::IsBagHadItem(BagGridData.ID)) ?
-	 	ESlateVisibility::Collapsed : ESlateVisibility::SelfHitTestInvisible);
+	DotImage->SetVisibility((BagGridData.ID == 0 || FGameSaveTool::IsBagHadItem(BagGridData.ID)) ?
+		ESlateVisibility::Collapsed : ESlateVisibility::SelfHitTestInvisible);
 }
 
 void UBagGridWidgetType1::PlayZoomAnimation(int Index)
