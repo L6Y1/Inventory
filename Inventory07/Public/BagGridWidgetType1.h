@@ -69,8 +69,13 @@ public:
 	void UpdateDisplay(int Index);
 	
 	UFUNCTION()
+	void UpdateDisplay2();
+	
+	UFUNCTION()
 	void PlayZoomAnimation(int Index);
 };
+
+
 
 inline void UBagGridWidgetType1::OnViewBagGridItemFinished2(int ID)
 {

@@ -7,11 +7,38 @@
 #include "UObject/NoExportTypes.h"
 #include "DataTableTool.generated.h"
 
-#define IntToName(int) FName(FString::FromInt(ID))
+#define IntToName(ID) FName(FString::FromInt(ID))
 
-struct FBagWidgetType1Attr;
 class UDataTable;
-struct FNavButtonAttr;
+
+
+#define DataTable_Signature(Signature)\
+private:\
+	static UDataTable *DT_##Signature##;\
+public:\
+	static F##Signature##* Get##Signature##(FName RowName);
+
+
+#define DataTable_Impl(Signature, DataTablePath)\
+F##Signature## * FDataTableTool::Get##Signature##(FName RowName)\
+{\
+	if (!DT_##Signature##)\
+	{\
+		DT_##Signature## = LoadObject<UDataTable>(nullptr, DataTablePath);\
+		check(DT_##Signature##);\
+	}\
+\
+	if (DT_##Signature##->GetRowMap().Find(RowName) != nullptr)\
+	{\
+		auto Result = DT_##Signature##->FindRow<F##Signature##>(RowName, TEXT("None"), true);\
+		return Result;\
+	}\
+	\
+	return nullptr;\
+};
+
+
+
 /**
  * 
  */
@@ -25,19 +52,11 @@ class INVENTORY07_API UDataTableTool : public UObject
 
 class FDataTableTool
 {
-	
-	static UDataTable *DT_NavButtonAttr;
-	
-	static UDataTable *DT_BagWidgetType1SkinAttr;
+	DataTable_Signature(NavButtonAttr)
 
-	static UDataTable *DT_FItemInBagGirdAttr;
-	
-public:
-	// get Button Attributes by button name in data table
-	static FNavButtonAttr* GetNavButtonAttr(FName RowName);
-	
-	static FBagWidgetType1Attr* GetBagWidgetType1Attr(FName RowName);
+	DataTable_Signature(BagWidgetType1Attr)
 
-	static FItemInBagGirdAttr* GetItemInBagGridAttr(FName RowName);
+	DataTable_Signature(ItemInBagGridAttr)
 	
+	DataTable_Signature(ItemOnGroundAttr)
 };

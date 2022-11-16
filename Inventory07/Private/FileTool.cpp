@@ -83,9 +83,24 @@ FGameSaveData FJsonTool::GetGameSaveDataFromJsonStr(FString JsonStr)
 		}
 
 		
-		// GameSaveData.ItemOnGround
-		auto ItemOnGroundJsonObj = GameSaveDataJsonObj->GetObjectField(FString("ItemOnGroundData"));
-		
+		// GameSaveData.ItemOnGroundDatas
+		auto ItemOnGroundJsonValueArray = GameSaveDataJsonObj->GetArrayField(FString("ItemOnGroundDatas"));
+		for (auto ItemOnGroundJsonValue : ItemOnGroundJsonValueArray)
+		{
+			FItemOnGroundData ItemOnGroundData;
+			auto ItemOnGroundJsonObj = ItemOnGroundJsonValue->AsObject();
+			auto LocationJsonArray = ItemOnGroundJsonObj->GetArrayField(FString("Location"));
+			
+			ItemOnGroundData.Index = FName(ItemOnGroundJsonObj->GetStringField(FString("Index")));
+			ItemOnGroundData.Location =  FVector(
+				LocationJsonArray[0]->AsNumber(),
+				LocationJsonArray[1]->AsNumber(),
+				LocationJsonArray[2]->AsNumber()
+			);
+			ItemOnGroundData.ID = ItemOnGroundJsonObj->GetNumberField(FString("ID"));
+			ItemOnGroundData.Num = ItemOnGroundJsonObj->GetNumberField(FString("Num"));
+			GameSaveData.ItemOnGroundDatas.Add(ItemOnGroundData.Index, ItemOnGroundData);
+		}
 	}
 
 	// add "JsonUtilities" in build.cs
@@ -148,12 +163,33 @@ FString FJsonTool::GetJsonStrFromGameSaveData(FGameSaveData GameSaveData)
 		}
 		JsonWriter->WriteObjectEnd();
 
-		// GameSaveData.ItemOnGroundData
-		JsonWriter->WriteIdentifierPrefix("ItemOnGroundData");
-		JsonWriter->WriteObjectStart();
+		// ItemOnGroundDatas
+		JsonWriter->WriteIdentifierPrefix("ItemOnGroundDatas");
+		JsonWriter->WriteArrayStart();
 		{
+			// write items array
+			for (auto KeyValuePair : GameSaveData.ItemOnGroundDatas)
+			{
+				// single item 
+				JsonWriter->WriteObjectStart();
+				{
+					JsonWriter->WriteValue<FString>(FString("Index"), KeyValuePair.Key.ToString());
+
+					JsonWriter->WriteIdentifierPrefix("Location");
+					JsonWriter->WriteArrayStart();
+					JsonWriter->WriteValue<float>(KeyValuePair.Value.Location.X);
+					JsonWriter->WriteValue<float>(KeyValuePair.Value.Location.Y);
+					JsonWriter->WriteValue<float>(KeyValuePair.Value.Location.Z);
+					JsonWriter->WriteArrayEnd();
+
+					JsonWriter->WriteValue<int>("ID", KeyValuePair.Value.ID);
+
+					JsonWriter->WriteValue<int>("Num", KeyValuePair.Value.Num);
+				}
+				JsonWriter->WriteObjectEnd();
+			}
 		}
-		JsonWriter->WriteObjectEnd();
+		JsonWriter->WriteArrayEnd();
 	}
 
 
@@ -231,7 +267,8 @@ FGameSaveData FFileTool::LoadGame(FString RelativePath, FString FileName)
 
 
 		GameSaveData.PlayerData = PlayerData;
-		GameSaveData.ItemOnGroundData = ItemOnGroundData;
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_3"),FItemOnGroundData(FName("Item_3"), FVector(-800, 100, 200), 10002, 1));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_1"),FItemOnGroundData(FName("Item_3"), FVector(-1000, 340, 200), 10001, 3));
 
 		SaveGame(GameSaveData, RelativePath, FileName);
 	}
@@ -284,9 +321,22 @@ TArray<FBagGridData> FGameSaveTool::GetAllBagGridDatas()
 	return FFileTool::LoadGame().PlayerData.BagData.BagGridData;
 }
 
+void FGameSaveTool::SetAllBagGridDatas(TArray<FBagGridData> NewBagGridDatas)
+{
+	FGameSaveData GameSaveData = FFileTool::LoadGame();
+	GameSaveData.PlayerData.BagData.BagGridData = NewBagGridDatas;
+	FFileTool::SaveGame(GameSaveData);
+}
+
 void FGameSaveTool::SetBagGridDataByIndex(FBagGridData NewBagGrid, int FoundIndex)
 {
 	auto GameSaveData = FFileTool::LoadGame();
 	GameSaveData.PlayerData.BagData.BagGridData[FoundIndex] = NewBagGrid;
 	FFileTool::SaveGame(GameSaveData);
+}
+
+TMap<FName, FItemOnGroundData> FGameSaveTool::GetItemOnGroundDatas()
+{
+	auto GameSaveData = FFileTool::LoadGame();
+	return GameSaveData.ItemOnGroundDatas;
 }

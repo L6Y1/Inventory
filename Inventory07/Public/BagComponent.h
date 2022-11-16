@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FileTool.h"
 #include "Components/ActorComponent.h"
 #include "BagComponent.generated.h"
 
@@ -35,13 +34,19 @@ public:
 
 	UFUNCTION()
 	void InspectBagGridItem(int GridIndex);
-
+	
 	UFUNCTION(BlueprintCallable)
 	int AddItem(int ID, int Amount);
 	
 	UFUNCTION(BlueprintCallable)
 	bool SubItem(int ID, int Amount);
 
+	/**
+	 * @brief first get all data of item in bag, make a TMap 'AllItems'.
+	 * With each Tuple in TMap, fill grid with MaxStackNum of item, rest of the item to fill one grid.
+	 * Fill the rest grid with empty grid.
+	 * 
+	 */
 	UFUNCTION()
 	void SortGridItem();
 

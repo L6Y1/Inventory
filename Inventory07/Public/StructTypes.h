@@ -17,12 +17,38 @@ class INVENTORY07_API UStructTypes : public UObject
 };
 
 USTRUCT(BlueprintType)
-struct FItemInBagGirdAttr : public FTableRowBase
+struct FItemOnGroundAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	FItemOnGroundAttr(){}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName ActorType;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName MeshName;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int MaxStackNum;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TipContextWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TipBorderWidgetClass;
+
+	
+};
+
+
+USTRUCT(BlueprintType)
+struct FItemInBagGridAttr : public FTableRowBase
 {
 	GENERATED_BODY()
 
 public:
-	FItemInBagGirdAttr(){}
+	FItemInBagGridAttr(){}
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FVector2D Size;		// grid size
@@ -129,13 +155,10 @@ struct FBagGridData
 
 public:
 	FBagGridData()
-	{
-	}
+	{}
 
 	FBagGridData(int ID, int Num): ID(ID), Num(Num)
-	{
-		
-	}
+	{}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ID;
@@ -175,8 +198,7 @@ struct FPlayerData
 
 public:
 	FPlayerData()
-	{
-	}
+	{}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
@@ -193,7 +215,7 @@ public:
 
 
 /**
- * @brief data of items that are (or can be placed) on the ground
+ * @brief data of items that are on the ground
  */
 USTRUCT(BlueprintType)
 struct FItemOnGroundData
@@ -202,8 +224,22 @@ struct FItemOnGroundData
 
 public:
 	FItemOnGroundData()
-	{
-	}
+	{}
+
+	FItemOnGroundData(FName Index, FVector Location, int ID, int Num): Index(Index), Location(Location), ID(ID), Num(Num)
+	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Index;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Location;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ID;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Num;
 };
 
 
@@ -224,7 +260,7 @@ public:
 	FPlayerData PlayerData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FItemOnGroundData ItemOnGroundData;
+	TMap<FName, FItemOnGroundData> ItemOnGroundDatas;
 };
 
 

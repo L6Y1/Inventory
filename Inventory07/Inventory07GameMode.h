@@ -13,6 +13,7 @@ class AInventory07GameMode : public AGameModeBase
 
 public:
 	AInventory07GameMode();
+	virtual void BeginPlay() override;
 };
 
 

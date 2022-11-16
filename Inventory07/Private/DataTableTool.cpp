@@ -7,60 +7,17 @@
 
 UDataTable* FDataTableTool::DT_NavButtonAttr = nullptr;
 
-UDataTable* FDataTableTool::DT_BagWidgetType1SkinAttr = nullptr;
+UDataTable* FDataTableTool::DT_BagWidgetType1Attr = nullptr;
 
-UDataTable* FDataTableTool::DT_FItemInBagGirdAttr = nullptr;
+UDataTable* FDataTableTool::DT_ItemInBagGridAttr = nullptr;
 
-FNavButtonAttr* FDataTableTool::GetNavButtonAttr(FName RowName)
-{
-	if (!DT_NavButtonAttr)
-	{
-		DT_NavButtonAttr = LoadObject<UDataTable>(nullptr,
-			TEXT("DataTable'/Game/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"));
-		check(DT_NavButtonAttr);
-	}
+UDataTable* FDataTableTool::DT_ItemOnGroundAttr = nullptr;
 
-	if (DT_NavButtonAttr->GetRowMap().Find(RowName) != nullptr)
-	{
-		auto Result = DT_NavButtonAttr->FindRow<FNavButtonAttr>(RowName, TEXT("None"), true);
-		return Result;
-	}
-	
-	return nullptr;
-}
+DataTable_Impl(NavButtonAttr, TEXT("DataTable'/Game/DataTable/DT_NavButtonAttrTable.DT_NavButtonAttrTable'"))
 
-FBagWidgetType1Attr * FDataTableTool::GetBagWidgetType1Attr(FName RowName)
-{
-	if (!DT_BagWidgetType1SkinAttr)
-	{
-		DT_BagWidgetType1SkinAttr = LoadObject<UDataTable>(nullptr,
-			TEXT("DataTable'/Game/DataTable/DT_FBagWidgetType1AttrTable.DT_FBagWidgetType1AttrTable'"));
-		check(DT_BagWidgetType1SkinAttr);
-	}
+DataTable_Impl(BagWidgetType1Attr, TEXT("DataTable'/Game/DataTable/DT_BagWidgetType1AttrTable.DT_BagWidgetType1AttrTable'"))
 
-	if (DT_BagWidgetType1SkinAttr->GetRowMap().Find(RowName) != nullptr)
-	{
-		auto Result = DT_BagWidgetType1SkinAttr->FindRow<FBagWidgetType1Attr>(RowName, TEXT("None"), true);
-		return Result;
-	}
-	
-	return nullptr;
-}
+DataTable_Impl(ItemInBagGridAttr, TEXT("DataTable'/Game/DataTable/DT_ItemInBagGirdAttrTable.DT_ItemInBagGirdAttrTable'"))
 
-FItemInBagGirdAttr * FDataTableTool::GetItemInBagGridAttr(FName RowName)
-{
-	if (!DT_FItemInBagGirdAttr)
-	{
-		DT_FItemInBagGirdAttr = LoadObject<UDataTable>(nullptr,
-			TEXT("DataTable'/Game/DataTable/DT_FItemInBagGirdAttrTable.DT_FItemInBagGirdAttrTable'"));
-		check(DT_FItemInBagGirdAttr);
-	}
+DataTable_Impl(ItemOnGroundAttr, TEXT("DataTable'/Game/DataTable/DT_ItemOnGroundAttrTable.DT_ItemOnGroundAttrTable'"))
 
-	if (DT_FItemInBagGirdAttr->GetRowMap().Find(RowName) != nullptr)
-	{
-		auto Result = DT_FItemInBagGirdAttr->FindRow<FItemInBagGirdAttr>(RowName, TEXT("None"), true);
-		return Result;
-	}
-	
-	return nullptr;
-}

@@ -55,7 +55,6 @@ void UBagComponent::InspectBagGridItem(int GridIndex)
 
 int UBagComponent::AddItem(int ID, int Amount)
 {
-	
 	auto ItemInBagGridAttr = FDataTableTool::GetItemInBagGridAttr(IntToName(ID));
 	if (ItemInBagGridAttr == nullptr)
 	{
@@ -145,7 +144,57 @@ bool UBagComponent::SubItem(int ID, int Amount)
 
 void UBagComponent::SortGridItem()
 {
-	UKismetSystemLibrary::PrintString(nullptr, "Sort");
+	auto BagGridDatas = FGameSaveTool::GetAllBagGridDatas();
+	
+	// TMap<id, num> all items in bag
+	TMap<int, int> AllItems;
+	for (auto BagGridData : BagGridDatas)
+	{
+		if (BagGridData.ID == 0)
+		{
+			continue;
+		}
+
+		if (!AllItems.Contains(BagGridData.ID))
+		{
+			AllItems.Add(BagGridData.ID, BagGridData.Num);
+		}
+		else
+		{
+			*AllItems.Find(BagGridData.ID) += BagGridData.Num;
+		}
+	}
+	// sort TMap by id incremently
+	AllItems.KeySort([](int L, int R){ return L < R; });
+
+	TArray<FBagGridData> NewBagGridDatas;
+	for (auto KeyValuePair : AllItems)
+	{
+		// amount of grids that expect to be fully filled 
+		int MaxStackNum = FDataTableTool::GetItemInBagGridAttr(FName(FString::FromInt(KeyValuePair.Key)))->MaxStackNum;
+		int ExpectedFullGridNum = KeyValuePair.Value / MaxStackNum;
+		for (int i = 0; i < ExpectedFullGridNum; ++i)
+		{
+			NewBagGridDatas.Add(FBagGridData(KeyValuePair.Key, MaxStackNum));
+		}
+
+		// after fully filled, the rest item amount
+		int ExpectedNotFullGridItemNum = KeyValuePair.Value % MaxStackNum;
+		if (ExpectedNotFullGridItemNum > 0)
+		{
+			NewBagGridDatas.Add(FBagGridData(KeyValuePair.Key, ExpectedNotFullGridItemNum));
+		}
+	}
+
+	// null grid
+	int NullGridNum = BagGridDatas.Num() - NewBagGridDatas.Num();
+	for (int i = 0; i < NullGridNum; ++i)
+	{
+		NewBagGridDatas.Add(FBagGridData(0, 0));
+	}
+
+	FGameSaveTool::SetAllBagGridDatas(NewBagGridDatas);
+	FGlobalEventManager::TriggerEvent(FName("SortCompleteEvent"), nullptr);
 }
 
 int UBagComponent::FindFreeGridIndex(int ID)
