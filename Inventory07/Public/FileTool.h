@@ -11,9 +11,10 @@ class FGameSaveTool
 {
 public:
 	static FBagGridData GetBagGridDataByIndex(int GridIndex);
+	static FItemOnGroundData GetItemOnGroundDataByIndex(FName Index);
 	
 	static int GetItemInBagGridTotalNum(int ID);
-
+	// do i have this item before?
 	static bool IsBagHadItem(int ID);
 
 	// add to already had items

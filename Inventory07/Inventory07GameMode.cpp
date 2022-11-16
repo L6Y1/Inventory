@@ -2,6 +2,7 @@
 
 #include "Inventory07GameMode.h"
 
+#include "DataTableTool.h"
 #include "FileTool.h"
 #include "Inventory07Character.h"
 #include "InventoryPlayerController.h"
@@ -30,12 +31,21 @@ void AInventory07GameMode::BeginPlay()
 	for (auto KeyValuePair : ItemOnGroundDatas)
 	{
 		auto ItemOnGroundData = KeyValuePair.Value;
+		auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ItemOnGroundData.ID));
+		
+		UClass *ItemOnGroundClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemOnGroundAttr->ActorType); 
+		
+		checkf(ItemOnGroundClass, TEXT("Class Not Found"));
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(ItemOnGroundData.Location);
+		FActorSpawnParameters Params;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		auto ItemOnGround = GetWorld()->SpawnActor<AActor>(ItemOnGroundClass, SpawnTransform, Params);
 
-		// TODO: asset table 
-		// UClass *ItemOnGroundClass = ADataAssetMananger::RequestSyncLoadClass(this, FName("")); 
-		//
-		// checkf(ItemOnGroundClass, TEXT("Class Not Found"));
-		// FTransform SpawnTransform;
-		// SpawnTransform.SetLocation(ItemOnGroundData.Location);
+		auto InitFuncPtr = ItemOnGround->FindFunction(FName("Init"));
+		if (InitFuncPtr)
+		{
+			ItemOnGround->ProcessEvent(InitFuncPtr, &ItemOnGroundData.Index);
+		}
 	}
 }

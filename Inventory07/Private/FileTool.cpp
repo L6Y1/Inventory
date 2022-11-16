@@ -268,7 +268,8 @@ FGameSaveData FFileTool::LoadGame(FString RelativePath, FString FileName)
 
 		GameSaveData.PlayerData = PlayerData;
 		GameSaveData.ItemOnGroundDatas.Add(FName("Item_3"),FItemOnGroundData(FName("Item_3"), FVector(-800, 100, 200), 10002, 1));
-		GameSaveData.ItemOnGroundDatas.Add(FName("Item_1"),FItemOnGroundData(FName("Item_3"), FVector(-1000, 340, 200), 10001, 3));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_1"),FItemOnGroundData(FName("Item_1"), FVector(-1000, 340, 200), 10001, 3));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_2"),FItemOnGroundData(FName("Item_2"), FVector(-1000, 440, 200), 20001, 1));
 
 		SaveGame(GameSaveData, RelativePath, FileName);
 	}
@@ -286,6 +287,13 @@ FBagGridData FGameSaveTool::GetBagGridDataByIndex(int GridIndex)
 	auto GameSaveData = FFileTool::LoadGame();
 	
 	return GameSaveData.PlayerData.BagData.BagGridData[GridIndex];
+}
+
+FItemOnGroundData FGameSaveTool::GetItemOnGroundDataByIndex(FName Index)
+{
+	auto GameSaveData = FFileTool::LoadGame();
+	
+	return *GameSaveData.ItemOnGroundDatas.Find(Index);
 }
 
 int FGameSaveTool::GetItemInBagGridTotalNum(int ID)
