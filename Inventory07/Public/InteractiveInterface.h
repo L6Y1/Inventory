@@ -23,16 +23,16 @@ class INVENTORY07_API IInteractiveInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	//进入的时候
-	virtual void Enter(class AActor* User) = 0;
-	//离开的时候
-	virtual void Exit(class AActor* User) = 0;
-	//停留Tick
-	virtual void StayTick(class AActor* User, float DeltaTime) = 0;
-
-	//开始交互
-	virtual void BeginInteraction(class AActor* User, class UInteractiveComponent* InteractiveComponent) = 0;
-	//结束交互
-	virtual void EndInteraction(class AActor* User) = 0;
-	//正在交互 tick
-	virtual void InteractionTick(class AActor* User, float DeltaTime, class UInteractiveComponent* InteractiveComponent) = 0;
+	// virtual void Enter(class AActor* User) = 0;
+	// //离开的时候
+	// virtual void Exit(class AActor* User) = 0;
+	// //停留Tick
+	// virtual void StayTick(class AActor* User, float DeltaTime) = 0;
+	//
+	// //开始交互
+	// virtual void BeginInteraction(class AActor* User, class UInteractiveComponent* InteractiveComponent) = 0;
+	// //结束交互
+	// virtual void EndInteraction(class AActor* User) = 0;
+	// //正在交互 tick
+	// virtual void InteractionTick(class AActor* User, float DeltaTime, class UInteractiveComponent* InteractiveComponent) = 0;
 };

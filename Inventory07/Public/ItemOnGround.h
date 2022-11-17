@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InteractiveInter.h"
 #include "InteractiveInterface.h"
 #include "GameFramework/Actor.h"
 #include "ItemOnGround.generated.h"
@@ -12,7 +13,7 @@ class UStaticMeshComponent;
 class UWidgetComponent;
 
 UCLASS()
-class INVENTORY07_API AItemOnGround : public AActor, public IInteractiveInterface
+class INVENTORY07_API AItemOnGround : public AActor, public IInteractiveInter
 {
 	GENERATED_BODY()
 	
@@ -54,14 +55,14 @@ public:
 	// Sets default values for this actor's properties
 
 public:
-	//begin InteractiveInterface impl
+	//begin InteractiveInter impl
 	virtual void Enter(AActor *User) override;
 	virtual void Exit(AActor *User) override;
 	virtual void StayTick(AActor *User, float DeltaTime) override;
 	
-	virtual void BeginInteraction(AActor *User, UInteractiveComponent *InteractiveComponent) override;
+	virtual void BeginInteraction(AActor *User, UInteractiveComp *InteractiveComponent) override;
 	virtual void EndInteraction(AActor *User) override;
-	virtual void InteractionTick(AActor *User, float DeltaTime, UInteractiveComponent *InteractiveComponent) override;
-	//~end InteractiveInterface impl
+	virtual void InteractionTick(AActor *User, float DeltaTime, UInteractiveComp *InteractiveComponent) override;
+	//~end InteractiveInter impl
 
 };

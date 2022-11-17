@@ -8,6 +8,12 @@ public class Inventory07 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "SlateCore", "Json" });
+		PublicDependencyModuleNames.AddRange(
+			new string[]
+			{
+				"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay",
+				"UMG", "SlateCore", "Json", "interactive" 
+				
+			});
 	}
 }

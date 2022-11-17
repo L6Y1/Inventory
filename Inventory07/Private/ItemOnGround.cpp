@@ -93,21 +93,60 @@ void AItemOnGround::OnHitGround(UPrimitiveComponent *HitComponent, AActor *Other
 
 void AItemOnGround::Enter(AActor *User)
 {
-	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "Enter");
+	
+	auto *Controller = Cast<APawn>(User)->Controller;
+
+	if (IsValid(Controller) && Controller->IsPlayerController() && WidgetComp->GetUserWidgetObject() == nullptr)
+	{
+		auto ItemOnGroundData = FGameSaveTool::GetItemOnGroundDataByIndex(ItemIndex);
+		
+		auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ItemOnGroundData.ID));
+		
+		auto *TipBorderWidgetClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemOnGroundAttr->TipBorderWidgetClass);
+
+		// alternative option, 
+		// WidgetComp->SetWidgetClass(TipBorderWidgetClass);
+		auto *TipBorderWidget = CreateWidget<UUserWidget>(Cast<APlayerController>(Controller), TipBorderWidgetClass);
+		
+		WidgetComp->SetWidget(TipBorderWidget);
+
+		// init the item description ui
+		auto *InitFuncPtr = TipBorderWidget->FindFunction(FName("Init"));
+		if (InitFuncPtr)
+		{
+			TipBorderWidget->ProcessEvent(InitFuncPtr, nullptr);
+		}
+	}
+	else
+	{
+		WidgetComp->SetVisibility(true);
+	}
 }
 
 void AItemOnGround::Exit(AActor *User)
 {
-	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "Exit");
+	auto *Controller = Cast<APawn>(User)->Controller;
+	if (IsValid(Controller) && Controller->IsPlayerController() && WidgetComp->IsVisible())
+	{
+		WidgetComp->SetVisibility(false);
+	}
 }
 
 void AItemOnGround::StayTick(AActor *User, float DeltaTime)
 {
-	// UKismetSystemLibrary::PrintString(nullptr, "StayTick");
 	ItemMesh->AddRelativeRotation(FRotator(0,0,20));
+	
+	auto *Controller = Cast<APawn>(User)->Controller;
+	if (IsValid(Controller) && Controller->IsPlayerController())
+	{
+		auto PC = Cast<APlayerController>(Controller);
+		
+		// get the camera rotation, reverse it and assign to WidgetComp
+		WidgetComp->SetWorldRotation((-PC->PlayerCameraManager->GetCameraRotation().Vector()).Rotation());
+	}
 }
 
-void AItemOnGround::BeginInteraction(AActor *User, UInteractiveComponent *InteractiveComponent)
+void AItemOnGround::BeginInteraction(AActor *User, UInteractiveComp *InteractiveComponent)
 {
 	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "BeginInteractive");
 }
@@ -117,9 +156,9 @@ void AItemOnGround::EndInteraction(AActor *User)
 	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "EndInteractive");
 }
 
-void AItemOnGround::InteractionTick(AActor *User, float DeltaTime, UInteractiveComponent *InteractiveComponent)
+void AItemOnGround::InteractionTick(AActor *User, float DeltaTime, UInteractiveComp *InteractiveComponent)
 {
-	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "InteractiveTick");
+	// UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "InteractiveTick");
 }
 
 

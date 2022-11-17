@@ -4,7 +4,7 @@
 
 #include "BagComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
-#include "InteractiveComponent.h"
+#include "InteractiveComp.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -51,7 +51,7 @@ AInventory07Character::AInventory07Character()
 
 
 	BagComponent = CreateDefaultSubobject<UBagComponent>(FName("BagComponent"));
-	InteractiveComponent = CreateDefaultSubobject<UInteractiveComponent>(FName("InteractiveComponent"));
+	InteractiveComp = CreateDefaultSubobject<UInteractiveComp>(FName("InteractiveComp"));
 }
 
 //////////////////////////////////////////////////////////////////////////

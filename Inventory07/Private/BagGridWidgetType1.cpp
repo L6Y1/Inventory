@@ -23,7 +23,17 @@ void UBagGridWidgetType1::NativeOnMouseEnter(const FGeometry &InGeometry, const 
 		this->PlayAnimation(ZoomAnimation);
 
 		FGlobalEventManager::TriggerEvent(FName("InspectBagGridItemEvent"), &GridIndex);
+
+		auto ItemInBagGridAttr = FDataTableTool::GetItemInBagGridAttr(IntToName(BagGridData.ID));
+		auto TipBorderWidgetClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemInBagGridAttr->TipBorderWidgetClass);
+		auto TipBorderWidget = CreateWidget<UUserWidget>(this->GetOwningPlayer(), TipBorderWidgetClass);
+		check(TipBorderWidget);
+		
+		ItemImage->SetToolTip(TipBorderWidget);
 	}
+
+	
+	
 }
 
 void UBagGridWidgetType1::NativeOnMouseLeave(const FPointerEvent &InMouseEvent)
@@ -33,6 +43,7 @@ void UBagGridWidgetType1::NativeOnMouseLeave(const FPointerEvent &InMouseEvent)
 	if (!BagGridData.ID == 0)
 	{
 		SelectImage->SetVisibility(ESlateVisibility::Collapsed);
+		ItemImage->ToolTipWidget->RemoveFromParent();
 	}
 }
 
