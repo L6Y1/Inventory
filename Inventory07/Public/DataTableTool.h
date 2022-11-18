@@ -60,4 +60,15 @@ class FDataTableTool
 	DataTable_Signature(ItemInBagGridAttr)
 	
 	DataTable_Signature(ItemOnGroundAttr)
+
+	DataTable_Signature(TipBorderWidgetType1Attr)
+	
+	DataTable_Signature(ItemCommonAttr)
+	
+	DataTable_Signature(ConsumablesAttr)
+	
+	DataTable_Signature(WeaponAttr)
+
+	
+	
 };

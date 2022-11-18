@@ -30,6 +30,22 @@ void UBagGridWidgetType1::NativeOnMouseEnter(const FGeometry &InGeometry, const 
 		check(TipBorderWidget);
 		
 		ItemImage->SetToolTip(TipBorderWidget);
+
+		auto *InitFuncPtr = TipBorderWidget->FindFunction(FName("Init"));
+		if (InitFuncPtr)
+		{
+			struct
+			{
+				int ID;
+				int Num;
+				int ActionType;
+			} Params;
+			Params.ID = BagGridData.ID;
+			Params.Num = BagGridData.Num;
+			Params.ActionType = 0; // 0 for item in bag grid
+			
+			TipBorderWidget->ProcessEvent(InitFuncPtr, &Params);
+		}
 	}
 
 	

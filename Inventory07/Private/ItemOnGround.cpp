@@ -95,10 +95,11 @@ void AItemOnGround::Enter(AActor *User)
 {
 	
 	auto *Controller = Cast<APawn>(User)->Controller;
+	
+	auto ItemOnGroundData = FGameSaveTool::GetItemOnGroundDataByIndex(ItemIndex);
 
 	if (IsValid(Controller) && Controller->IsPlayerController() && WidgetComp->GetUserWidgetObject() == nullptr)
 	{
-		auto ItemOnGroundData = FGameSaveTool::GetItemOnGroundDataByIndex(ItemIndex);
 		
 		auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ItemOnGroundData.ID));
 		
@@ -114,11 +115,36 @@ void AItemOnGround::Enter(AActor *User)
 		auto *InitFuncPtr = TipBorderWidget->FindFunction(FName("Init"));
 		if (InitFuncPtr)
 		{
-			TipBorderWidget->ProcessEvent(InitFuncPtr, nullptr);
+			struct 
+			{
+				int ID;
+				int Num;
+				int ActionType;
+			} Params;
+			Params.ID = ItemOnGroundData.ID;
+			Params.Num = ItemOnGroundData.Num;
+			Params.ActionType = 1; // 1 for item on ground
+			
+			TipBorderWidget->ProcessEvent(InitFuncPtr, &Params);
 		}
 	}
 	else
 	{
+		auto *InitFuncPtr = WidgetComp->GetUserWidgetObject()->FindFunction(FName("Init"));
+		if (InitFuncPtr)
+		{
+			struct 
+			{
+				int ID;
+				int Num;
+				int ActionType;
+			} Params;
+			Params.ID = ItemOnGroundData.ID;
+			Params.Num = ItemOnGroundData.Num;
+			Params.ActionType = 1; // 1 for item on ground
+			
+			WidgetComp->GetUserWidgetObject()->ProcessEvent(InitFuncPtr, &Params);
+		}
 		WidgetComp->SetVisibility(true);
 	}
 }

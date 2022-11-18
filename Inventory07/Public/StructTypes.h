@@ -16,6 +16,106 @@ class INVENTORY07_API UStructTypes : public UObject
 	GENERATED_BODY()
 };
 
+
+USTRUCT(BlueprintType)
+struct FWeaponAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	FWeaponAttr(){}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	uint8 EquType;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FName, float> Attrubutes;
+	
+};
+
+
+/*
+ * helper struct for FConsumables.Attributes
+ */
+USTRUCT(BlueprintType)
+struct FConsumablesHelperValue : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	FConsumablesHelperValue(){}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> Values;
+};
+
+
+USTRUCT(BlueprintType)
+struct FConsumablesAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+public:
+	FConsumablesAttr(){}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float CD;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FName, float> Costs;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FName, FConsumablesHelperValue> Attributes;
+	
+};
+
+
+
+
+
+
+
+
+
+USTRUCT(BlueprintType)
+struct FItemCommonAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+public:
+	FItemCommonAttr(){}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Name;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Description;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int BuyPrice;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int SellPrice;
+	
+	
+};
+
+
+
+USTRUCT(BlueprintType)
+struct FTipBorderWidgetType1Attr : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	FTipBorderWidgetType1Attr(){}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName BGImage; // background image
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName TitleBG; // title background image
+};
+
+
+
 USTRUCT(BlueprintType)
 struct FItemOnGroundAttr : public FTableRowBase
 {
