@@ -329,6 +329,7 @@ public:
 	FItemOnGroundData(FName Index, FVector Location, int ID, int Num): Index(Index), Location(Location), ID(ID), Num(Num)
 	{}
 
+	// unique id to identify the item on ground
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Index;
 	

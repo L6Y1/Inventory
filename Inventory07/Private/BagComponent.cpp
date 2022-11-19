@@ -25,6 +25,7 @@ void UBagComponent::BeginPlay()
 	Super::BeginPlay();
 	FGlobalEventManager::RegisterEvent(FName("InspectBagGridItemEvent"), this, FName("InspectBagGridItem"));
 	FGlobalEventManager::RegisterEvent(FName("SortGridItemEvent"), this, FName("SortGridItem"));
+	FGlobalEventManager::RegisterEvent(FName("StartPickupItemFromGroundEvent"), this, FName("StartPickupItemFromGround"));
 }
 
 void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -32,6 +33,7 @@ void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 	FGlobalEventManager::UnRegisterEvent(FName("InspectBagGridItemEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SortGridItemEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("StartPickupItemFromGroundEvent"), this);
 }
 
 
@@ -195,6 +197,31 @@ void UBagComponent::SortGridItem()
 
 	FGameSaveTool::SetAllBagGridDatas(NewBagGridDatas);
 	FGlobalEventManager::TriggerEvent(FName("SortCompleteEvent"), nullptr);
+}
+
+void UBagComponent::StartPickupItemFromGround(AActor *User, FName Index, FVector NewLocation)
+{
+	if (this->GetOwner() == User)
+	{
+		auto ItemOnGroundData = FGameSaveTool::GetItemOnGroundDataByIndex(Index);
+
+		int RemainAmount = AddItem(ItemOnGroundData.ID, ItemOnGroundData.Num);
+
+		struct 
+		{
+			int Remain;
+			FName Index;
+			FVector Location;
+		} Params;
+		Params.Index = Index;
+		Params.Remain = RemainAmount;
+		Params.Location = NewLocation;
+
+		// to GameMode
+		FGlobalEventManager::TriggerEvent(FName("EndPickupItemFromGroundEvent"), &Params);
+	}
+
+	
 }
 
 int UBagComponent::FindFreeGridIndex(int ID)

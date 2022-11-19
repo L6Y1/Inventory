@@ -5,9 +5,11 @@
 
 #include "DataTableTool.h"
 #include "FileTool.h"
+#include "InteractiveComp.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
+#include "Inventory07/GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -32,11 +34,11 @@ AItemOnGround::AItemOnGround()
 	RootBI->bLockZRotation = false;
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("ItemMesh"));
-	ItemMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	ItemMesh->SetupAttachment(RootComponent);
 	ItemMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	WidgetComp = CreateDefaultSubobject<UWidgetComponent>(FName("WidgetComp"));
-	WidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	WidgetComp->SetupAttachment(RootComponent);
 	WidgetComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	WidgetComp->SetDrawAtDesiredSize(true);
 	WidgetComp->SetRelativeLocation(FVector(0, 0, 64));
@@ -174,18 +176,34 @@ void AItemOnGround::StayTick(AActor *User, float DeltaTime)
 
 void AItemOnGround::BeginInteraction(AActor *User, UInteractiveComp *InteractiveComponent)
 {
-	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "BeginInteractive");
+	Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Ignore);
+	Collision->SetSimulatePhysics(false);
+	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void AItemOnGround::EndInteraction(AActor *User)
 {
-	UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "EndInteractive");
+	struct 
+	{
+		AActor *User;
+		FName ItemIndex;
+		FVector Location;
+	} Params;
+	Params.User = User;
+	Params.ItemIndex = ItemIndex;
+	Params.Location = this->GetActorLocation();
+	// to BagComponent
+	FGlobalEventManager::TriggerEvent(FName("StartPickupItemFromGroundEvent"), &Params);
 }
 
 void AItemOnGround::InteractionTick(AActor *User, float DeltaTime, UInteractiveComp *InteractiveComponent)
 {
-	// UKismetSystemLibrary::PrintString(nullptr, this->GetName() + "InteractiveTick");
+	auto Location = FMath::Lerp(this->GetActorLocation(), User->GetActorLocation(), 0.2f);
+	this->SetActorLocation(Location);
+
+	if (FVector::Dist(this->GetActorLocation(), User->GetActorLocation()) < 10)
+	{
+		AActor *OutUser;
+		InteractiveComponent->EndInteraction(OutUser);
+	}
 }
-
-
-

@@ -9,6 +9,7 @@
 #include "DataAssetMananger/DataAssetMananger.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/HUD.h"
+#include "GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AInventory07GameMode::AInventory07GameMode()
@@ -21,12 +22,15 @@ AInventory07GameMode::AInventory07GameMode()
 	}
 	PlayerControllerClass = AInventoryPlayerController::StaticClass();
 
-	
+	FGlobalEventManager::RegisterEvent(FName("EndPickupItemFromGroundEvent"), this, FName("EndPickupItemFromGround"));
+
 }
 
 void AInventory07GameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// create items on ground
 	auto ItemOnGroundDatas = FGameSaveTool::GetItemOnGroundDatas();
 	for (auto KeyValuePair : ItemOnGroundDatas)
 	{
@@ -49,3 +53,24 @@ void AInventory07GameMode::BeginPlay()
 		}
 	}
 }
+
+void AInventory07GameMode::EndPickupItemFromGround(int RemainAmount, FName Index, FVector NewLocation)
+{
+	
+	// if the item on ground not fully picked up
+	if (RemainAmount > 0)
+	{
+		auto ItemOnGroundData = FGameSaveTool::GetItemOnGroundDataByIndex(Index);
+		ItemOnGroundData.Location = NewLocation;
+		ItemOnGroundData.Num = RemainAmount;
+
+		FGameSaveTool::SetItemOnGroundDataByIndex(ItemOnGroundData, Index);
+	}
+	else
+	{
+		FGameSaveTool::RemoveItemOnGroundDataByIndex(Index);
+	}
+
+	// TODO: alert the ui to update 
+}
+

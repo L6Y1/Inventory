@@ -44,8 +44,8 @@ void UTipBorderWidgetType1::UpdateDisplay(int ID, int Num, int ActionType)
 	ItemNameText->SetText(FText::FromName(ItemCommonAttr->Name));
 	ItemNumText->SetText(FText::FromString(FString::FromInt(Num)));
 
-	auto ConsumablesAttr = FDataTableTool::GetConsumablesAttr(IntToName(ID));
-	if (ConsumablesAttr)
+	// auto ConsumablesAttr = FDataTableTool::GetConsumablesAttr(IntToName(ID));
+	// if (ConsumablesAttr)
 	{
 		FName TipContextWidgetClass;
 		if (ActionType == 1)
@@ -58,21 +58,32 @@ void UTipBorderWidgetType1::UpdateDisplay(int ID, int Num, int ActionType)
 			TipContextWidgetClass = ItemInBagGridAttr->TipContextWidgetClass;
 		}
 
-		auto TipContextWidgetType = ADataAssetMananger::RequestSyncLoadClass(this, TipContextWidgetClass);
-		check(TipContextWidgetType);
+		// create context widget
+		if (TipContextWidgetPanel->GetAllChildren().Num() == 0)
+		{
+			auto TipContextWidgetType = ADataAssetMananger::RequestSyncLoadClass(this, TipContextWidgetClass);
+			check(TipContextWidgetType);
 
-		auto TipContextWidget = WidgetTree->ConstructWidget<UUserWidget>(TipContextWidgetType);
+			auto TipContextWidget = WidgetTree->ConstructWidget<UUserWidget>(TipContextWidgetType);
 
-		TipContextWidgetPanel->AddChildToVerticalBox(TipContextWidget);
+			TipContextWidgetPanel->AddChildToVerticalBox(TipContextWidget);
 
-		// TODO: TipContextWidget->Init()
-	}
-
-	auto WeaponAttr = FDataTableTool::GetWeaponAttr(IntToName(ID));
-	if (WeaponAttr)
-	{
+			
+			auto *InitFuncPtr = TipContextWidget->FindFunction(FName("Init"));
+			if (InitFuncPtr)
+			{
+				struct
+				{
+					int ID;
+				} Params;
+				Params.ID = ID;
+				TipContextWidget->ProcessEvent(InitFuncPtr, &Params);
+			}
+		
+		}
 		
 	}
+
 
 	
 }

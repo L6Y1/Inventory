@@ -50,6 +50,9 @@ public:
 	UFUNCTION()
 	void SortGridItem();
 
+	UFUNCTION()
+	void StartPickupItemFromGround(AActor *User, FName Index, FVector NewLocation);
+
 	
 	// find the index of grid which contains given id item, that most equal to full grid stack num
 	int FindFreeGridIndex(int ID);

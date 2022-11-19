@@ -267,9 +267,10 @@ FGameSaveData FFileTool::LoadGame(FString RelativePath, FString FileName)
 
 
 		GameSaveData.PlayerData = PlayerData;
-		GameSaveData.ItemOnGroundDatas.Add(FName("Item_3"),FItemOnGroundData(FName("Item_3"), FVector(-800, 100, 200), 10002, 1));
-		GameSaveData.ItemOnGroundDatas.Add(FName("Item_1"),FItemOnGroundData(FName("Item_1"), FVector(-1000, 340, 200), 10001, 3));
-		GameSaveData.ItemOnGroundDatas.Add(FName("Item_2"),FItemOnGroundData(FName("Item_2"), FVector(-1000, 440, 200), 20001, 1));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_1"),FItemOnGroundData(FName("Item_1"), FVector(-900, 140, 200), 10001, 7));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_2"),FItemOnGroundData(FName("Item_2"), FVector(-900, 240, 200), 10002, 4));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_3"),FItemOnGroundData(FName("Item_3"), FVector(-900, 440, 200), 20001, 1));
+		GameSaveData.ItemOnGroundDatas.Add(FName("Item_4"),FItemOnGroundData(FName("Item_4"), FVector(-900, 540, 200), 20002, 1));
 
 		SaveGame(GameSaveData, RelativePath, FileName);
 	}
@@ -287,6 +288,21 @@ FBagGridData FGameSaveTool::GetBagGridDataByIndex(int GridIndex)
 	auto GameSaveData = FFileTool::LoadGame();
 	
 	return GameSaveData.PlayerData.BagData.BagGridData[GridIndex];
+}
+
+void FGameSaveTool::RemoveItemOnGroundDataByIndex(const FName &Index)
+{
+	auto GameSaveData = FFileTool::LoadGame();
+	GameSaveData.ItemOnGroundDatas.Remove(Index);
+	FFileTool::SaveGame(GameSaveData);
+}
+
+void FGameSaveTool::SetItemOnGroundDataByIndex(FItemOnGroundData NewData, FName Index)
+{
+	auto GameSaveData = FFileTool::LoadGame();
+	*GameSaveData.ItemOnGroundDatas.Find(Index) = NewData;
+
+	FFileTool::SaveGame(GameSaveData);
 }
 
 FItemOnGroundData FGameSaveTool::GetItemOnGroundDataByIndex(FName Index)
@@ -336,10 +352,10 @@ void FGameSaveTool::SetAllBagGridDatas(TArray<FBagGridData> NewBagGridDatas)
 	FFileTool::SaveGame(GameSaveData);
 }
 
-void FGameSaveTool::SetBagGridDataByIndex(FBagGridData NewBagGrid, int FoundIndex)
+void FGameSaveTool::SetBagGridDataByIndex(FBagGridData NewBagGrid, int ID)
 {
 	auto GameSaveData = FFileTool::LoadGame();
-	GameSaveData.PlayerData.BagData.BagGridData[FoundIndex] = NewBagGrid;
+	GameSaveData.PlayerData.BagData.BagGridData[ID] = NewBagGrid;
 	FFileTool::SaveGame(GameSaveData);
 }
 
