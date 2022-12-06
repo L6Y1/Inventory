@@ -7,17 +7,16 @@
 
 #include "DataTableTool.h"
 #include "StructTypes.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
-#include "Components/GridPanel.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Components/WrapBox.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunName)
 {
@@ -107,6 +106,28 @@ void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunNam
 void UBagWidgetType1::UnInit(UUserWidget *Owner)
 {
 	FGlobalEventManager::UnRegisterEvent(FName("CloseBagWidgetEvent"), Owner);
+}
+
+FReply UBagWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
+{
+	if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	{
+		return  UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
+	}
+	return FReply::Unhandled();
+}
+
+void UBagWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent,
+	UDragDropOperation *&OutOperation)
+{
+	
+	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+}
+
+bool UBagWidgetType1::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
+	UDragDropOperation *InOperation)
+{
+	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
 

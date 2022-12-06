@@ -5,6 +5,7 @@
 
 #include "DataTableTool.h"
 #include "FileTool.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -85,6 +86,52 @@ void UBagGridWidgetType1::NativeDestruct()
 	FGlobalEventManager::UnRegisterEvent(FName("AddItemOnBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SubItemOnBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SortCompleteEvent"), this);
+}
+
+FReply UBagGridWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
+{
+	
+	if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) && FGameSaveTool::GetBagGridDataByIndex(GridIndex).ID != 0)
+	{
+		return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
+	}
+	return FReply::Unhandled();
+}
+
+void UBagGridWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent,
+	UDragDropOperation *&OutOperation)
+{
+	auto DragWidgetClassName = FDataTableTool::GetItemInBagGridAttr(IntToName(FGameSaveTool::GetBagGridDataByIndex(GridIndex).ID))->DragWidgetClass;
+	auto DragWidgetClass = ADataAssetMananger::RequestSyncLoadClass(this, DragWidgetClassName);
+	check(DragWidgetClass);
+	auto DragWidget = CreateWidget<UUserWidget>(this->GetOwningPlayer(), DragWidgetClass);
+
+	auto BagGridData = FGameSaveTool::GetBagGridDataByIndex(GridIndex);
+	auto ItemInBagGridAttr = FDataTableTool::GetItemInBagGridAttr(IntToName(FGameSaveTool::GetBagGridDataByIndex(GridIndex).ID));
+	
+	auto InitFuncPtr = DragWidget->FindFunction(FName("Init"));
+	if (InitFuncPtr)
+	{
+		struct 
+		{
+			FName IconName;
+			int Num;
+		} Params;
+		Params.IconName = ItemInBagGridAttr->ItemImage;
+		Params.Num = BagGridData.Num;
+		DragWidget->ProcessEvent(InitFuncPtr, &Params);
+	}
+	
+	auto DDO = UWidgetBlueprintLibrary::CreateDragDropOperation(UDragDropOperation::StaticClass());
+	DDO->DefaultDragVisual = DragWidget;
+	DDO->Pivot = EDragPivot::MouseDown;
+	OutOperation = DDO;
+}
+
+bool UBagGridWidgetType1::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
+	UDragDropOperation *InOperation)
+{
+	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
 void UBagGridWidgetType1::OnViewBagGridItemFinished(int ID)

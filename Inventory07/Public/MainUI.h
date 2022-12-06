@@ -15,12 +15,16 @@ class INVENTORY07_API UMainUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual FReply NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent) override;
+
 public:
 
 	// equal to BeginPlay()
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	
 	
 	UPROPERTY(meta=(BindWidget))
 	UHorizontalBox *NavButtonPanel;

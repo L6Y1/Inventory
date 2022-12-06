@@ -13,6 +13,11 @@
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+FReply UMainUI::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
+{
+	return FReply::Unhandled();
+}
+
 void UMainUI::NativeConstruct()
 {
 	Super::NativeConstruct();

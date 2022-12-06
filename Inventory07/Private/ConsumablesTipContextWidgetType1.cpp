@@ -12,10 +12,18 @@
 
 void UConsumablesTipContextWidgetType1::Init(int ID)
 {
-	// auto *WeaponAttr = FDataTableTool::GetWeaponAttr(IntToName(ID));
+	// auto *ConsumablesAttr = FDataTableTool::GetConsumablesAttr(IntToName(ID));
+	//
+	// UTextBlock *CoolDownText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+	// CoolDownText->SetText(FText::FromString(FString::SanitizeFloat(ConsumablesAttr->CD)));
+	// AttrListPanel->AddChildToVerticalBox(CoolDownText);
+	//
+	// UTextBlock *CostText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+	// CoolDownText->SetText(FText::FromString(FString::SanitizeFloat(ConsumablesAttr->Costs[0])));
+	// AttrListPanel->AddChildToVerticalBox(CostText);
 	//
 	// // for each attribute, create a horizontal ui that shows it 
-	// for (auto KeyValuePair : WeaponAttr->Attrubutes)
+	// for (auto KeyValuePair : ConsumablesAttr->Attributes)
 	// {
 	// 	auto HorizontalBox = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
 	// 	(AttrListPanel->AddChildToVerticalBox(HorizontalBox))->SetHorizontalAlignment(HAlign_Left);
