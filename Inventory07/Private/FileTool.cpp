@@ -364,3 +364,19 @@ TMap<FName, FItemOnGroundData> FGameSaveTool::GetItemOnGroundDatas()
 	auto GameSaveData = FFileTool::LoadGame();
 	return GameSaveData.ItemOnGroundDatas;
 }
+
+void FGameSaveTool::AddItemOnGroundData(FName &Index, FItemOnGroundData NewItemOnGroundData)
+{
+	auto ItemOnGroundDatas = FGameSaveTool::GetItemOnGroundDatas();
+	int NumTemp = 0;
+	
+	do
+	{
+		Index = FName(FString("Item_") + FString::FromInt(NumTemp));
+		++NumTemp;
+	} while (ItemOnGroundDatas.Contains(Index));
+	NewItemOnGroundData.Index = Index;
+	auto GameSaveData = FFileTool::LoadGame();
+	GameSaveData.ItemOnGroundDatas.Add(Index, NewItemOnGroundData);
+	FFileTool::SaveGame(GameSaveData);
+}

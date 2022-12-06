@@ -17,6 +17,7 @@ class INVENTORY07_API UMainUI : public UUserWidget
 	
 protected:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent) override;
+	virtual bool NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation) override;
 
 public:
 

@@ -53,6 +53,11 @@ public:
 	UFUNCTION()
 	void StartPickupItemFromGround(AActor *User, FName Index, FVector NewLocation);
 
+	UFUNCTION()
+	void DragBagGridToOtherBagGrid(int FromIndex, int ToIndex);
+
+	UFUNCTION()
+	void BagGridDragToGround(int GridIndex);
 	
 	// find the index of grid which contains given id item, that most equal to full grid stack num
 	int FindFreeGridIndex(int ID);
@@ -61,5 +66,3 @@ public:
 	// find the index of grid which contains given id item, that most not equal to full grid stack num
 	int FindMinNumGrid(int ID);
 };
-
- 

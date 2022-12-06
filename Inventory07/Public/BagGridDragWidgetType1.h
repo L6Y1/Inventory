@@ -25,6 +25,6 @@ public:
 	UTextBlock *ItemNum;
 
 	UFUNCTION()
-	void Init(FName ItemName, int Num);
+	void Init(FName ItemName, int Num, bool ShowNum);
 	
 };

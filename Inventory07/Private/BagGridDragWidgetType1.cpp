@@ -8,12 +8,12 @@
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 
 
-void UBagGridDragWidgetType1::Init(FName ItemName, int Num)
+void UBagGridDragWidgetType1::Init(FName ItemName, int Num, bool ShowNum)
 {
 	ADataAssetMananger::RequestAsyncLoadObject(this, ItemName,
 		[this](UObject *Asset)
 	{
 		ItemImage->SetBrushFromTexture(Cast<UTexture2D>(Asset));
 	});
-	ItemNum->SetText(FText::FromString(FString::FromInt(Num)));
+	ShowNum ? ItemNum->SetText(FText::FromString(FString::FromInt(Num))) : ItemNum->SetVisibility(ESlateVisibility::Collapsed);
 }

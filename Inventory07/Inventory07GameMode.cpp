@@ -10,6 +10,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/HUD.h"
 #include "GlobalEventManager/GlobalEventManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AInventory07GameMode::AInventory07GameMode()
@@ -23,6 +24,7 @@ AInventory07GameMode::AInventory07GameMode()
 	PlayerControllerClass = AInventoryPlayerController::StaticClass();
 
 	FGlobalEventManager::RegisterEvent(FName("EndPickupItemFromGroundEvent"), this, FName("EndPickupItemFromGround"));
+	FGlobalEventManager::RegisterEvent(FName("SpawnItemOnGroundEvent"), this, FName("SpawnItemOnGround"));
 
 }
 
@@ -38,8 +40,8 @@ void AInventory07GameMode::BeginPlay()
 		auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ItemOnGroundData.ID));
 		
 		UClass *ItemOnGroundClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemOnGroundAttr->ActorType); 
+		checkf(ItemOnGroundClass, TEXT("Class Not Found"))
 		
-		checkf(ItemOnGroundClass, TEXT("Class Not Found"));
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(ItemOnGroundData.Location);
 		FActorSpawnParameters Params;
@@ -74,3 +76,26 @@ void AInventory07GameMode::EndPickupItemFromGround(int RemainAmount, FName Index
 	// TODO: alert the ui to update 
 }
 
+void AInventory07GameMode::SpawnItemOnGround(int ID, int Num, FVector Location)
+{
+	FName NewIndex = FName("default_name");
+	FItemOnGroundData NewItemData(NewIndex, Location, ID, Num);
+	FGameSaveTool::AddItemOnGroundData(NewIndex, NewItemData);
+
+	auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ID));
+		
+	UClass *ItemOnGroundClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemOnGroundAttr->ActorType); 
+	checkf(ItemOnGroundClass, TEXT("Class Not Found"))
+		
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(Location);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	auto ItemOnGround = GetWorld()->SpawnActor<AActor>(ItemOnGroundClass, SpawnTransform, Params);
+
+	auto InitFuncPtr = ItemOnGround->FindFunction(FName("Init"));
+	if (InitFuncPtr)
+	{
+		ItemOnGround->ProcessEvent(InitFuncPtr, &NewIndex);
+	}
+}

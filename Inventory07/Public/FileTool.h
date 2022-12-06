@@ -36,6 +36,8 @@ public:
 
 	// get all items on the ground
 	static TMap<FName, FItemOnGroundData> GetItemOnGroundDatas();
+
+	static void AddItemOnGroundData(FName &Index, FItemOnGroundData NewItemOnGroundData);
 	
 	//~end ItemOnGroundDatas
 

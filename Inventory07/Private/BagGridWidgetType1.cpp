@@ -3,6 +3,8 @@
 
 #include "BagGridWidgetType1.h"
 
+#include "BagGridDragDropOperation.h"
+#include "BagGridDragWidgetType1.h"
 #include "DataTableTool.h"
 #include "FileTool.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
@@ -68,7 +70,6 @@ void UBagGridWidgetType1::NativeConstruct()
 {
 	Super::NativeConstruct();
 	FGlobalEventManager::RegisterEvent(FName("ViewBagGridItemFinishedEvent"), this, FName("OnViewBagGridItemFinished"));
-	// FGlobalEventManager::RegisterEvent(FName("ViewBagGridItemFinishedEvent"), this, FName("OnViewBagGridItemFinished2"));
 	
 
 	FGlobalEventManager::RegisterEvent(FName("AddItemOnBagGridEvent"), this, FName("UpdateDisplay"));
@@ -77,6 +78,9 @@ void UBagGridWidgetType1::NativeConstruct()
 	FGlobalEventManager::RegisterEvent(FName("SubItemOnBagGridEvent"), this, FName("UpdateDisplay"));
 	
 	FGlobalEventManager::RegisterEvent(FName("SortCompleteEvent"), this, FName("UpdateDisplay2"));
+	
+	FGlobalEventManager::RegisterEvent(FName("DragBagGridToOtherBagGridFinishedEvent"), this, FName("OnDragBagGridToOtherBagGridFinished"));
+	FGlobalEventManager::RegisterEvent(FName("BagGridDragToGroundFinishedEvent"), this, FName("OnBagGridDragToGroundFinished"));
 }
 
 void UBagGridWidgetType1::NativeDestruct()
@@ -86,6 +90,8 @@ void UBagGridWidgetType1::NativeDestruct()
 	FGlobalEventManager::UnRegisterEvent(FName("AddItemOnBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SubItemOnBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SortCompleteEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("DragBagGridToOtherBagGridFinishedEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("BagGridDragToGroundFinishedEvent"), this);
 }
 
 FReply UBagGridWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
@@ -116,23 +122,55 @@ void UBagGridWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, cons
 		{
 			FName IconName;
 			int Num;
+			bool ShowNum;
 		} Params;
 		Params.IconName = ItemInBagGridAttr->ItemImage;
+		Params.ShowNum = ItemInBagGridAttr->bIsShowNum;
 		Params.Num = BagGridData.Num;
+		
 		DragWidget->ProcessEvent(InitFuncPtr, &Params);
 	}
 	
-	auto DDO = UWidgetBlueprintLibrary::CreateDragDropOperation(UDragDropOperation::StaticClass());
+	auto DDO = UWidgetBlueprintLibrary::CreateDragDropOperation(UBagGridDragDropOperation::StaticClass());
 	DDO->DefaultDragVisual = DragWidget;
 	DDO->Pivot = EDragPivot::MouseDown;
+	DDO->Tag = TEXT("BagGridWidget");
+	DDO->Payload = this;
+	Cast<UBagGridDragDropOperation>(DDO)->DragGridIndex = GridIndex;
 	OutOperation = DDO;
+	
+	// set opacity of the image and text
+	this->ItemImage->SetOpacity(0.5);
+	this->ItemNumText->SetOpacity(0.5);
+
+	DDO->OnDragCancelled.AddDynamic(this, &UBagGridWidgetType1::OnSetOpacityTo1);
+	DDO->OnDrop.AddDynamic(this, &UBagGridWidgetType1::OnSetOpacityTo1);
 }
 
 bool UBagGridWidgetType1::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
 	UDragDropOperation *InOperation)
 {
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	checkf(InOperation->Payload, TEXT("DragDropOperation Payload is not valid, check again!"))
+	if (InOperation->Payload->GetClass() == this->GetClass())
+	{
+		struct 
+		{
+			int FromIndex;
+			int ToIndex;
+		} Params;
+		Params.FromIndex = Cast<UBagGridWidgetType1>(InOperation->Payload)->GridIndex;
+		Params.ToIndex = this->GridIndex;
+		
+		FGlobalEventManager::TriggerEvent(FName("DragBagGridToOtherBagGridEvent"), &Params);
+	}
+	return true;
 }
+
+// void UBagGridWidgetType1::NativeOnDragCancelled(const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
+// {
+// 	UKismetSystemLibrary::PrintString(nullptr, "on cancelled");
+// 	
+// }
 
 void UBagGridWidgetType1::OnViewBagGridItemFinished(int ID)
 {
@@ -214,4 +252,24 @@ void UBagGridWidgetType1::PlayZoomAnimation(int Index)
 	if (Index != this->GridIndex) return;
 
 	this->PlayAnimation(ZoomAnimation, 0, 1);
+}
+
+void UBagGridWidgetType1::OnSetOpacityTo1(UDragDropOperation *Operation)
+{
+	this->ItemImage->SetOpacity(1.0f);
+	this->ItemNumText->SetOpacity(1.0f);
+}
+
+void UBagGridWidgetType1::OnDragBagGridToOtherBagGridFinished(int FromIndex, int ToIndex)
+{
+	if (this->GridIndex == FromIndex || this->GridIndex == ToIndex)
+		UpdateDisplay2();
+}
+
+void UBagGridWidgetType1::OnBagGridDragToGroundFinished(int DragGridIndex)
+{
+	if (this->GridIndex == GridIndex)
+	{
+		UpdateDisplay2();
+	}
 }

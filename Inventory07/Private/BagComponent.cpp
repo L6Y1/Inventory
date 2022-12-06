@@ -26,6 +26,8 @@ void UBagComponent::BeginPlay()
 	FGlobalEventManager::RegisterEvent(FName("InspectBagGridItemEvent"), this, FName("InspectBagGridItem"));
 	FGlobalEventManager::RegisterEvent(FName("SortGridItemEvent"), this, FName("SortGridItem"));
 	FGlobalEventManager::RegisterEvent(FName("StartPickupItemFromGroundEvent"), this, FName("StartPickupItemFromGround"));
+	FGlobalEventManager::RegisterEvent(FName("DragBagGridToOtherBagGridEvent"), this, FName("DragBagGridToOtherBagGrid"));
+	FGlobalEventManager::RegisterEvent(FName("BagGridDragToGroundEvent"), this, FName("BagGridDragToGround"));
 }
 
 void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -34,6 +36,8 @@ void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	FGlobalEventManager::UnRegisterEvent(FName("InspectBagGridItemEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("SortGridItemEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("StartPickupItemFromGroundEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("DragBagGridToOtherBagGridEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("BagGridDragToGroundEvent"), this);
 }
 
 
@@ -221,6 +225,63 @@ void UBagComponent::StartPickupItemFromGround(AActor *User, FName Index, FVector
 		FGlobalEventManager::TriggerEvent(FName("EndPickupItemFromGroundEvent"), &Params);
 	}
 
+	
+}
+
+void UBagComponent::DragBagGridToOtherBagGrid(int FromIndex, int ToIndex)
+{
+	if (FromIndex == ToIndex)
+		return;
+
+	auto FromBagGridData = FGameSaveTool::GetBagGridDataByIndex(FromIndex);
+	auto ToBagGridData = FGameSaveTool::GetBagGridDataByIndex(ToIndex);
+
+	if (FromBagGridData.ID != ToBagGridData.ID)
+	{
+		FGameSaveTool::SetBagGridDataByIndex(ToBagGridData, FromIndex);
+		FGameSaveTool::SetBagGridDataByIndex(FromBagGridData, ToIndex);
+	}
+	else
+	{
+		auto TotalTemp = FromBagGridData.Num + ToBagGridData.Num;
+		int MaxStackNum = FDataTableTool::GetItemInBagGridAttr(IntToName(FromBagGridData.ID))->MaxStackNum;
+
+		FBagGridData NewToBagGridData(FromBagGridData.ID, FMath::Min(TotalTemp, MaxStackNum));
+		FBagGridData NewFromBagGridData(
+			TotalTemp <= MaxStackNum ? 0 : FromBagGridData.ID,
+			TotalTemp - FMath::Min(TotalTemp, MaxStackNum));
+		
+		FGameSaveTool::SetBagGridDataByIndex(NewToBagGridData, ToIndex);
+		FGameSaveTool::SetBagGridDataByIndex(NewFromBagGridData, FromIndex);
+	}
+
+	struct 
+	{
+		int FromIndex;
+		int ToIndex;
+	} Params;
+	Params.FromIndex = FromIndex;
+	Params.ToIndex = ToIndex;
+	
+	FGlobalEventManager::TriggerEvent(FName("DragBagGridToOtherBagGridFinishedEvent"), &Params);
+}
+
+void UBagComponent::BagGridDragToGround(int GridIndex)
+{
+	auto BagGridData = FGameSaveTool::GetBagGridDataByIndex(GridIndex);
+	FGameSaveTool::SetBagGridDataByIndex(FBagGridData(0, 0), GridIndex);
+	FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundFinishedEvent"), &GridIndex);
+
+	struct 
+	{
+		int ID;
+		int Num;
+		FVector Location;
+	} Params;
+	Params.ID = BagGridData.ID;
+	Params.Num = BagGridData.Num;
+	Params.Location = GetOwner()->GetActorLocation();
+	FGlobalEventManager::TriggerEvent(FName("SpawnItemOnGroundEvent"), &Params);
 	
 }
 

@@ -3,8 +3,10 @@
 
 #include "MainUI.h"
 
+#include "BagGridDragDropOperation.h"
 #include "DataTableTool.h"
 #include "StructTypes.h"
+#include "Blueprint/DragDropOperation.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
@@ -16,6 +18,18 @@
 FReply UMainUI::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
 {
 	return FReply::Unhandled();
+}
+
+bool UMainUI::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
+	UDragDropOperation *InOperation)
+{
+	if (InOperation->IsA(UBagGridDragDropOperation::StaticClass()))
+	{
+		auto BagGridDDO = Cast<UBagGridDragDropOperation>(InOperation);
+
+		FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &BagGridDDO->DragGridIndex);
+	}
+	return true;
 }
 
 void UMainUI::NativeConstruct()

@@ -17,6 +17,9 @@ public:
 
 	UFUNCTION()
 	void EndPickupItemFromGround(int RemainAmount, FName Index, FVector NewLocation);
+	
+	UFUNCTION()
+	void SpawnItemOnGround(int ID, int Num, FVector Location);
 };
 
 

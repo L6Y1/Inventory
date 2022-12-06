@@ -58,13 +58,13 @@ protected:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent) override;
 	virtual void NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent, UDragDropOperation *&OutOperation) override;
 	virtual bool NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation) override;
+	// virtual void NativeOnDragCancelled(const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation) override;
 	
 public:
 	UFUNCTION()
 	void OnViewBagGridItemFinished(int ID);
 	
-	UFUNCTION()
-	void OnViewBagGridItemFinished2(int ID);
+	
 	
 	UFUNCTION()
 	void Init(int Index);
@@ -77,11 +77,13 @@ public:
 	
 	UFUNCTION()
 	void PlayZoomAnimation(int Index);
+
+	UFUNCTION()
+	void OnSetOpacityTo1(UDragDropOperation *Operation);
+
+	UFUNCTION()
+	void OnDragBagGridToOtherBagGridFinished(int FromIndex, int ToIndex);
+
+	UFUNCTION()
+	void OnBagGridDragToGroundFinished(int DragGridIndex);
 };
-
-
-
-inline void UBagGridWidgetType1::OnViewBagGridItemFinished2(int ID)
-{
-	UKismetSystemLibrary::PrintString(nullptr, "Test func testtest");
-}
