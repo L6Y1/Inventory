@@ -65,4 +65,7 @@ public:
 	int FindEmptyGridIndex();
 	// find the index of grid which contains given id item, that most not equal to full grid stack num
 	int FindMinNumGrid(int ID);
+
+	UFUNCTION()
+	void SpawnItemOnGround(int ID, int Num, FVector Location);
 };

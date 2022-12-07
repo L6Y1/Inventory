@@ -4,14 +4,12 @@
 
 #include "DataTableTool.h"
 #include "FileTool.h"
-#include "Inventory07Character.h"
 #include "InventoryPlayerController.h"
 #include "DataAssetMananger/DataAssetMananger.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/HUD.h"
 #include "GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 AInventory07GameMode::AInventory07GameMode()
 {
@@ -24,7 +22,7 @@ AInventory07GameMode::AInventory07GameMode()
 	PlayerControllerClass = AInventoryPlayerController::StaticClass();
 
 	FGlobalEventManager::RegisterEvent(FName("EndPickupItemFromGroundEvent"), this, FName("EndPickupItemFromGround"));
-	FGlobalEventManager::RegisterEvent(FName("SpawnItemOnGroundEvent"), this, FName("SpawnItemOnGround"));
+	// FGlobalEventManager::RegisterEvent(FName("SpawnItemOnGroundEvent"), this, FName("SpawnItemOnGround"));
 
 }
 

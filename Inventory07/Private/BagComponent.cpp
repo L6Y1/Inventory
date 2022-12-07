@@ -5,6 +5,7 @@
 
 #include "DataTableTool.h"
 #include "FileTool.h"
+#include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -28,6 +29,7 @@ void UBagComponent::BeginPlay()
 	FGlobalEventManager::RegisterEvent(FName("StartPickupItemFromGroundEvent"), this, FName("StartPickupItemFromGround"));
 	FGlobalEventManager::RegisterEvent(FName("DragBagGridToOtherBagGridEvent"), this, FName("DragBagGridToOtherBagGrid"));
 	FGlobalEventManager::RegisterEvent(FName("BagGridDragToGroundEvent"), this, FName("BagGridDragToGround"));
+	FGlobalEventManager::RegisterEvent(FName("SpawnItemOnGroundEvent"), this, FName("SpawnItemOnGround"));
 }
 
 void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -38,6 +40,7 @@ void UBagComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	FGlobalEventManager::UnRegisterEvent(FName("StartPickupItemFromGroundEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("DragBagGridToOtherBagGridEvent"), this);
 	FGlobalEventManager::UnRegisterEvent(FName("BagGridDragToGroundEvent"), this);
+	FGlobalEventManager::UnRegisterEvent(FName("SpawnItemOnGroundEvent"), this);
 }
 
 
@@ -342,4 +345,29 @@ int UBagComponent::FindMinNumGrid(int ID)
 		}
 	}
 	return FoundIndex;
+}
+
+
+void UBagComponent::SpawnItemOnGround(int ID, int Num, FVector Location)
+{
+	FName NewIndex = FName("default_name");
+	FItemOnGroundData NewItemData(NewIndex, Location, ID, Num);
+	FGameSaveTool::AddItemOnGroundData(NewIndex, NewItemData);
+
+	auto ItemOnGroundAttr = FDataTableTool::GetItemOnGroundAttr(IntToName(ID));
+		
+	UClass *ItemOnGroundClass = ADataAssetMananger::RequestSyncLoadClass(this, ItemOnGroundAttr->ActorType); 
+	checkf(ItemOnGroundClass, TEXT("Class Not Found"))
+		
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(Location);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	auto ItemOnGround = GetWorld()->SpawnActor<AActor>(ItemOnGroundClass, SpawnTransform, Params);
+
+	auto InitFuncPtr = ItemOnGround->FindFunction(FName("Init"));
+	if (InitFuncPtr)
+	{
+		ItemOnGround->ProcessEvent(InitFuncPtr, &NewIndex);
+	}
 }
