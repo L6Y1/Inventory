@@ -18,7 +18,6 @@
 #include "Components/WrapBox.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunName)
 {
@@ -123,13 +122,23 @@ FReply UBagWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, con
 void UBagWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent,
 	UDragDropOperation *&OutOperation)
 {
+	auto MouseStartCoordinate = InMouseEvent.GetScreenSpacePosition();
+	auto MouseStartCoordinateInViewport = InGeometry.AbsoluteToLocal(MouseStartCoordinate);
+	
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 	auto *DDO = UWidgetBlueprintLibrary::CreateDragDropOperation(UBagGridDragDropOperation::StaticClass());
 	DDO->DefaultDragVisual = this;
 	DDO->Pivot = EDragPivot::MouseDown;
-	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this]()
+	this->RemoveFromParent();
+	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this, MouseStartCoordinateInViewport](FGeometry Geometry, FPointerEvent MouseEvent)
 	{
+		this->AddToViewport();
+		this->SetDesiredSizeInViewport(this->BagSizeBox->GetDesiredSize());
+
+		auto MouseEndCoordinate = MouseEvent.GetScreenSpacePosition();
+		auto MouseEndCoordinateInViewport = Geometry.AbsoluteToLocal(MouseEndCoordinate);
 		
+		this->SetPositionInViewport(MouseEndCoordinateInViewport - MouseStartCoordinateInViewport, false);
 	});
 
 	

@@ -138,7 +138,7 @@ void UBagGridWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, cons
 	DDO->Payload = this;
 	
 	Cast<UBagGridDragDropOperation>(DDO)->DragGridIndex = GridIndex;
-	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this]()
+	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this](FGeometry Geometry, FPointerEvent MouseEvent)
 	{
 		FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &GridIndex);
 	});

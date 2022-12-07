@@ -5,8 +5,8 @@
 
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
 
-void UBagGridDragDropOperation::DropToHudWidget()
+void UBagGridDragDropOperation::DropToHudWidget(FGeometry Geometry, FPointerEvent MouseEvent)
 {
-	this->DropToHudWidgetDelegate.ExecuteIfBound();
+	this->DropToHudWidgetDelegate.ExecuteIfBound(Geometry, MouseEvent);
 	
 }

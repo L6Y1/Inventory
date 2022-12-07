@@ -22,5 +22,5 @@ class INVENTORY07_API IDDOInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void DropToHudWidget() = 0;
+	virtual void DropToHudWidget(FGeometry Geometry, FPointerEvent MouseEvent) = 0;
 };

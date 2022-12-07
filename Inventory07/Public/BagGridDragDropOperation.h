@@ -7,7 +7,7 @@
 #include "Blueprint/DragDropOperation.h"
 #include "BagGridDragDropOperation.generated.h"
 
-DECLARE_DELEGATE(FDropToHudWidgetDelegate)
+DECLARE_DELEGATE_TwoParams(FDropToHudWidgetDelegate, FGeometry, FPointerEvent)
 /**
  * 
  */
@@ -22,5 +22,5 @@ public:
 	FDropToHudWidgetDelegate DropToHudWidgetDelegate;
 
 	
-	virtual void DropToHudWidget() override;
+	virtual void DropToHudWidget(FGeometry Geometry, FPointerEvent MouseEvent) override;
 };

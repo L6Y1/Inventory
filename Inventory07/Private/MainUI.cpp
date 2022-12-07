@@ -32,7 +32,7 @@ bool UMainUI::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &In
 	auto DDOInterface = Cast<IDDOInterface>(InOperation);
 	if (DDOInterface)
 	{
-		DDOInterface->DropToHudWidget();
+		DDOInterface->DropToHudWidget(InGeometry, InDragDropEvent);
 	}
 
 	
@@ -135,6 +135,7 @@ void UMainUI::OpenBagWidget(FName ToggledWidgetLayoutType)
 	}
 	// add to slot on MainUI
 	BagWidgetSlot->AddChild(BagWidget);
+	// this->bBagWidgetOpen = true;
 }
 
 void UMainUI::CloseBagWidget()
@@ -147,12 +148,14 @@ void UMainUI::CloseBagWidget()
 			UUserWidget *Owner;
 		} Params;
 		Params.Owner = this;
-		BagWidget->ProcessEvent(UnInitFuncPtr, &Params);
+		BagWidget->ProcessEvent(UnInitFuncPtr, this);
 	}
 	
 	FGlobalEventManager::UnRegisterEvent(FName("CloseBagWidgetEvent"), this);
-	BagWidgetSlot->RemoveChild(BagWidget);
+	//BagWidgetSlot->RemoveChild(BagWidget);
+	BagWidget->RemoveFromParent();
 	BagWidget = nullptr;
+	// this->bBagWidgetOpen = false;
 }
 
 
