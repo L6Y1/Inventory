@@ -48,6 +48,13 @@ void UNavButtonWidgetType1::Init(FNavButtonAttr NavButtonAttr)
 		);
 }
 
+bool UNavButtonWidgetType1::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
+	UDragDropOperation *InOperation)
+{
+	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	return true;
+}
+
 void UNavButtonWidgetType1::NavButtonOnClicked()
 {
 	// call delegate

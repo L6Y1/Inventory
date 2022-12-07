@@ -46,6 +46,9 @@ public:
 	void Init(FName Index);
 
 	void UpdateDisplay(FName Index);
+
+	UFUNCTION()
+	void OnUpdateItemOnGround(FName Index);
 	
 	UFUNCTION()
 	void OnItemOnGroundBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bBFromSweep,

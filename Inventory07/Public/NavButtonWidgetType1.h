@@ -34,4 +34,7 @@ public:
 	
 	UFUNCTION()
 	void Init(FNavButtonAttr NavButtonAttr);
+
+protected:
+	virtual bool NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation) override;
 };

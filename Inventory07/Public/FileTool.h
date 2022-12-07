@@ -38,6 +38,8 @@ public:
 	static TMap<FName, FItemOnGroundData> GetItemOnGroundDatas();
 
 	static void AddItemOnGroundData(FName &Index, FItemOnGroundData NewItemOnGroundData);
+
+	static bool ItemOnGroundExist(FName Index);
 	
 	//~end ItemOnGroundDatas
 

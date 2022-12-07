@@ -380,3 +380,9 @@ void FGameSaveTool::AddItemOnGroundData(FName &Index, FItemOnGroundData NewItemO
 	GameSaveData.ItemOnGroundDatas.Add(Index, NewItemOnGroundData);
 	FFileTool::SaveGame(GameSaveData);
 }
+
+bool FGameSaveTool::ItemOnGroundExist(FName Index)
+{
+	FItemOnGroundData *ItemOnGroundData = FFileTool::LoadGame().ItemOnGroundDatas.Find(Index);
+	return !!ItemOnGroundData;
+}

@@ -136,7 +136,13 @@ void UBagGridWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, cons
 	DDO->Pivot = EDragPivot::MouseDown;
 	DDO->Tag = TEXT("BagGridWidget");
 	DDO->Payload = this;
+	
 	Cast<UBagGridDragDropOperation>(DDO)->DragGridIndex = GridIndex;
+	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this]()
+	{
+		FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &GridIndex);
+	});
+	
 	OutOperation = DDO;
 	
 	// set opacity of the image and text

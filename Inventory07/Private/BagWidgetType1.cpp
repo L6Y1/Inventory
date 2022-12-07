@@ -5,6 +5,7 @@
 
 #include <Asset.h>
 
+#include "BagGridDragDropOperation.h"
 #include "DataTableTool.h"
 #include "StructTypes.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
@@ -17,6 +18,7 @@
 #include "Components/WrapBox.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 #include "Inventory07/GlobalEventManager/GlobalEventManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunName)
 {
@@ -110,6 +112,7 @@ void UBagWidgetType1::UnInit(UUserWidget *Owner)
 
 FReply UBagWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
 {
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 	if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
 	{
 		return  UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
@@ -120,14 +123,24 @@ FReply UBagWidgetType1::NativeOnMouseButtonDown(const FGeometry &InGeometry, con
 void UBagWidgetType1::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent,
 	UDragDropOperation *&OutOperation)
 {
-	
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+	auto *DDO = UWidgetBlueprintLibrary::CreateDragDropOperation(UBagGridDragDropOperation::StaticClass());
+	DDO->DefaultDragVisual = this;
+	DDO->Pivot = EDragPivot::MouseDown;
+	Cast<UBagGridDragDropOperation>(DDO)->DropToHudWidgetDelegate.BindLambda([this]()
+	{
+		
+	});
+
+	
+	OutOperation = DDO;
 }
 
 bool UBagWidgetType1::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
 	UDragDropOperation *InOperation)
 {
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+	return true;
 }
 
 

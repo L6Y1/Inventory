@@ -23,12 +23,19 @@ FReply UMainUI::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPoin
 bool UMainUI::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent,
 	UDragDropOperation *InOperation)
 {
-	if (InOperation->IsA(UBagGridDragDropOperation::StaticClass()))
+	// if (InOperation->IsA(UBagGridDragDropOperation::StaticClass()))
+	// {
+	// 	auto BagGridDDO = Cast<UBagGridDragDropOperation>(InOperation);
+	//
+	// 	FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &BagGridDDO->DragGridIndex);
+	// }
+	auto DDOInterface = Cast<IDDOInterface>(InOperation);
+	if (DDOInterface)
 	{
-		auto BagGridDDO = Cast<UBagGridDragDropOperation>(InOperation);
-
-		FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &BagGridDDO->DragGridIndex);
+		DDOInterface->DropToHudWidget();
 	}
+
+	
 	return true;
 }
 
@@ -140,7 +147,7 @@ void UMainUI::CloseBagWidget()
 			UUserWidget *Owner;
 		} Params;
 		Params.Owner = this;
-		BagWidget->ProcessEvent(UnInitFuncPtr, this);
+		BagWidget->ProcessEvent(UnInitFuncPtr, &Params);
 	}
 	
 	FGlobalEventManager::UnRegisterEvent(FName("CloseBagWidgetEvent"), this);

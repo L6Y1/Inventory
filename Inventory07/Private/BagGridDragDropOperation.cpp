@@ -3,3 +3,10 @@
 
 #include "BagGridDragDropOperation.h"
 
+#include "Inventory07/GlobalEventManager/GlobalEventManager.h"
+
+void UBagGridDragDropOperation::DropToHudWidget()
+{
+	this->DropToHudWidgetDelegate.ExecuteIfBound();
+	
+}

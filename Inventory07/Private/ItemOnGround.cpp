@@ -52,6 +52,7 @@ AItemOnGround::AItemOnGround()
 void AItemOnGround::BeginPlay()
 {
 	Super::BeginPlay();
+	FGlobalEventManager::RegisterEvent(FName("UpdateItemOnGroundEvent"), this, FName("OnUpdateItemOnGround"));
 	
 }
 
@@ -59,7 +60,7 @@ void AItemOnGround::BeginPlay()
 void AItemOnGround::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 void AItemOnGround::Init(FName Index)
@@ -82,6 +83,25 @@ void AItemOnGround::UpdateDisplay(FName Index)
 		}
 	);
 }
+
+
+void AItemOnGround::OnUpdateItemOnGround(FName Index)
+{
+	if (this->ItemIndex != Index)
+		return;
+	if (FGameSaveTool::ItemOnGroundExist(Index))
+	{
+		// not fully picked up
+		Collision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+		Collision->SetSimulatePhysics(true);
+		Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
+	else
+	{
+		this->Destroy();
+	}
+}
+
 
 void AItemOnGround::OnItemOnGroundBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
                                                UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult &SweepResult)

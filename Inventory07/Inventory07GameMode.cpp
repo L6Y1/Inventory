@@ -71,7 +71,7 @@ void AInventory07GameMode::EndPickupItemFromGround(int RemainAmount, FName Index
 		FGameSaveTool::RemoveItemOnGroundDataByIndex(Index);
 	}
 
-	// TODO: alert the ui to update 
+	FGlobalEventManager::TriggerEvent(FName("UpdateItemOnGroundEvent"), &Index);
 }
 
 void AInventory07GameMode::SpawnItemOnGround(int ID, int Num, FVector Location)
