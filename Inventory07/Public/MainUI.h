@@ -33,6 +33,9 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	UNamedSlot *BagWidgetSlot;
 
+	UPROPERTY(meta=(BindWidget))
+	UNamedSlot *ShortCutSlot;
+
 	UUserWidget *BagWidget;
 
 	void OpenBagWidget(FName ToggledWidgetLayoutType);

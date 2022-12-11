@@ -21,3 +21,5 @@ DataTable_Impl(ConsumablesAttr, TEXT("DataTable'/Game/DataTable/DT_ConsumablesAt
 
 DataTable_Impl(WeaponAttr, TEXT("DataTable'/Game/DataTable/DT_WeaponAttrTable.DT_WeaponAttrTable'"))
 
+DataTable_Impl(ShortCutBarAttr, TEXT("DataTable'/Game/DataTable/DT_ShortCutBarAttrTable.DT_ShortCutBarAttrTable'"))
+

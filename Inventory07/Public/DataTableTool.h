@@ -68,6 +68,8 @@ class FDataTableTool
 	DataTable_Signature(ConsumablesAttr)
 	
 	DataTable_Signature(WeaponAttr)
+	
+	DataTable_Signature(ShortCutBarAttr)
 
 	
 	

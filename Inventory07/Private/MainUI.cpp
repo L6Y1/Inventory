@@ -89,6 +89,28 @@ void UMainUI::NativeConstruct()
 		
 	}
 	
+	FString ShortCutBarStyle;
+	// load config
+	GConfig->GetString(
+		TEXT("GameUIInit/MainUI/ShortCutBar"),
+		TEXT("Style"),
+		ShortCutBarStyle,
+		GGameIni
+	);
+	auto *ShortCutBarAttr = FDataTableTool::GetShortCutBarAttr(FName(ShortCutBarStyle));
+	
+	auto *ShortCutBarWidgetClass = ADataAssetMananger::RequestSyncLoadClass(this, FName(ShortCutBarStyle));
+	check(ShortCutBarWidgetClass);
+	auto *ShortCutBarWidget = CreateWidget(this->GetOwningPlayer(), ShortCutBarWidgetClass);
+
+	auto *InitFuncPtr = ShortCutBarWidget->FindFunction("Init");
+	if (InitFuncPtr)
+	{
+		ShortCutBarWidget->ProcessEvent(InitFuncPtr, ShortCutBarAttr);
+	}
+	
+	ShortCutSlot->AddChild(ShortCutBarWidget);
+	
 }
 
 void UMainUI::NativeDestruct()

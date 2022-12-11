@@ -102,7 +102,23 @@ FGameSaveData FJsonTool::GetGameSaveDataFromJsonStr(FString JsonStr)
 			GameSaveData.ItemOnGroundDatas.Add(ItemOnGroundData.Index, ItemOnGroundData);
 		}
 	}
+	int ShortCutGridNum;
+	GConfig->GetInt(
+	TEXT("GameUIInit/MainUI/ShortCutBar"),
+	TEXT("ShortCutGridNum"),
+	ShortCutGridNum,
+	GGameIni
+	);
 
+	int GridNum;
+	GConfig->GetInt(
+		TEXT("GameSaveInit/Player/BagData"),
+		TEXT("GridNum"),
+		GridNum,
+		GGameIni
+	);
+	checkf(GameSaveData.PlayerData.BagData.BagGridData.Num() == ShortCutGridNum + GridNum, TEXT("Data from Game.ini and sav file conflicts, check ShortCutGridNum and GridNum!!!"));
+	
 	// add "JsonUtilities" in build.cs
 	// FGameSaveData SaveData;
 	// FJsonObjectConverter::JsonObjectStringToUStruct<FGameSaveData>(JsonStr, &GameSaveData, 0, 0);
@@ -255,7 +271,14 @@ FGameSaveData FFileTool::LoadGame(FString RelativePath, FString FileName)
 			GridNum,
 			GGameIni
 		);
-		for (int i = 0; i < GridNum; ++i)
+		int ShortCutGridNum;
+		GConfig->GetInt(
+		TEXT("GameUIInit/MainUI/ShortCutBar"),
+		TEXT("ShortCutGridNum"),
+		ShortCutGridNum,
+		GGameIni
+		);
+		for (int i = 0; i < GridNum + ShortCutGridNum; ++i)
 		{
 			BagData.BagGridData.Add(FBagGridData(0, 0));
 		}

@@ -178,6 +178,22 @@ public:
 	FName DragWidgetClass;
 };
 
+USTRUCT()
+struct FShortCutBarAttr : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FShortCutBarAttr(){}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName GridType;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName BackGroundImage;
+
+	
+};
 
 /**
  * @brief Struct that contains attributes of navbuttons
