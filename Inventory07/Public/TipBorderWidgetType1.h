@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "TipBorderWidgetType1.generated.h"
 
+class UHorizontalBox;
 class UVerticalBox;
 class UTextBlock;
 class UBorder;
@@ -29,7 +30,7 @@ public:
 	UTextBlock *ItemNameText;
 
 	UPROPERTY(meta=(BindWidget))
-	UVerticalBox *TipContextWidgetPanel;
+	UHorizontalBox *TipContextWidgetPanel;
 
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock *ItemNumText;

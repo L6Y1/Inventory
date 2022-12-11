@@ -6,6 +6,7 @@
 #include "DataTableTool.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/HorizontalBox.h"
+#include "Components/HorizontalBoxSlot.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
@@ -18,7 +19,7 @@ void UWeaponTipContextWidgetType1::Init(int ID)
 	for (auto KeyValuePair : WeaponAttr->Attrubutes)
 	{
 		auto HorizontalBox = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
-		(AttrListPanel->AddChildToVerticalBox(HorizontalBox))->SetHorizontalAlignment(HAlign_Left);
+		(AttrListPanel->AddChildToVerticalBox(HorizontalBox))->SetSize(ESlateSizeRule::Fill);
 
 		
 		// create attr-name TextBlock
@@ -55,11 +56,26 @@ void UWeaponTipContextWidgetType1::Init(int ID)
 
 
 		AttrNameText->Font.Size = 11;
-		SeparatorText->Font.Size = 11;
-		AttrValueText->Font.Size = 11;
-		HorizontalBox->AddChildToHorizontalBox(AttrNameText);
-		HorizontalBox->AddChildToHorizontalBox(SeparatorText);
-		HorizontalBox->AddChildToHorizontalBox(AttrValueText);
+		SeparatorText->Font.Size = 10;
+		AttrValueText->Font.Size = 10;
+
+		FSlateChildSize SizeRule = FSlateChildSize();
+		
+		auto Slot1 = HorizontalBox->AddChildToHorizontalBox(AttrNameText);
+		SizeRule.Value = 1;
+		Slot1->SetSize(SizeRule);
+		Slot1->SetHorizontalAlignment(HAlign_Left);
+		
+		auto Slot2 = HorizontalBox->AddChildToHorizontalBox(SeparatorText);
+		SizeRule.Value = 1;
+		Slot1->SetSize(FSlateChildSize(ESlateSizeRule::Automatic));
+		Slot2->SetHorizontalAlignment(HAlign_Center);
+		
+		auto Slot3 = HorizontalBox->AddChildToHorizontalBox(AttrValueText);
+		SizeRule.Value = 1;
+		Slot3->SetSize(SizeRule);
+		Slot3->SetHorizontalAlignment(HAlign_Right);
+		
 	}
 
 

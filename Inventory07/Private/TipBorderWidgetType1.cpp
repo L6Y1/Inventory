@@ -6,8 +6,9 @@
 #include "DataTableTool.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
+#include "Components/HorizontalBox.h"
+#include "Components/Spacer.h"
 #include "Components/TextBlock.h"
-#include "Components/VerticalBox.h"
 #include "Inventory07/DataAssetMananger/DataAssetMananger.h"
 
 void UTipBorderWidgetType1::Init(int ID, int Num, int ActionType)
@@ -65,8 +66,10 @@ void UTipBorderWidgetType1::UpdateDisplay(int ID, int Num, int ActionType)
 			check(TipContextWidgetType);
 
 			auto TipContextWidget = WidgetTree->ConstructWidget<UUserWidget>(TipContextWidgetType);
+			auto SpacerWidget = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass());
 
-			TipContextWidgetPanel->AddChildToVerticalBox(TipContextWidget);
+			TipContextWidgetPanel->AddChildToHorizontalBox(TipContextWidget);
+			TipContextWidgetPanel->AddChildToHorizontalBox(SpacerWidget);
 
 			
 			auto *InitFuncPtr = TipContextWidget->FindFunction(FName("Init"));
