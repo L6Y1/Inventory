@@ -182,7 +182,7 @@ void AItemOnGround::Exit(AActor *User)
 
 void AItemOnGround::StayTick(AActor *User, float DeltaTime)
 {
-	ItemMesh->AddRelativeRotation(FRotator(0,0,20));
+	ItemMesh->AddRelativeRotation(FRotator(0,5,0));
 	
 	auto *Controller = Cast<APawn>(User)->Controller;
 	if (IsValid(Controller) && Controller->IsPlayerController())

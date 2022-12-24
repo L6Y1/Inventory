@@ -25,6 +25,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+	void ToggleMainUI();
 	void ShowUI();
 	void FadeUI();
 	

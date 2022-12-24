@@ -29,7 +29,7 @@ bool UMainUI::NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &In
 	//
 	// 	FGlobalEventManager::TriggerEvent(FName("BagGridDragToGroundEvent"), &BagGridDDO->DragGridIndex);
 	// }
-	auto DDOInterface = Cast<IDDOInterface>(InOperation);
+	TScriptInterface<IDDOInterface> DDOInterface = InOperation;
 	if (DDOInterface)
 	{
 		DDOInterface->DropToHudWidget(InGeometry, InDragDropEvent);

@@ -19,26 +19,6 @@ void AInventoryPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	MainUIWidget = CreateWidget(this, WidClass);
-	MainUIWidget->AddToViewport();
-	auto InputMode = FInputModeGameAndUI();
-	this->SetInputMode(InputMode);
-	this->SetShowMouseCursor(true);
-}
-
-void AInventoryPlayerController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("ShowMouseCursor", EKeys::Tab));
-	InputComponent->BindAction("ShowMouseCursor", EInputEvent::IE_Pressed, this, &AInventoryPlayerController::ShowUI);
-	InputComponent->BindAction("ShowMouseCursor", EInputEvent::IE_Released, this, &AInventoryPlayerController::FadeUI);
-
-}
-
-void AInventoryPlayerController::ShowUI()
-{
-	
 	// MainUIWidget = CreateWidget(this, WidClass);
 	// MainUIWidget->AddToViewport();
 	// auto InputMode = FInputModeGameAndUI();
@@ -46,9 +26,41 @@ void AInventoryPlayerController::ShowUI()
 	// this->SetShowMouseCursor(true);
 }
 
+void AInventoryPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("ShowMouseCursor", EKeys::Tab));
+	InputComponent->BindAction("ShowMouseCursor", EInputEvent::IE_Pressed, this, &AInventoryPlayerController::ToggleMainUI);
+
+}
+
+void AInventoryPlayerController::ToggleMainUI()
+{
+	if (MainUIWidget != nullptr)
+	{
+		FadeUI();
+	}
+	else
+	{
+		ShowUI();
+	}
+}
+
+void AInventoryPlayerController::ShowUI()
+{
+	
+	MainUIWidget = CreateWidget(this, WidClass);
+	MainUIWidget->AddToViewport();
+	auto InputMode = FInputModeGameAndUI();
+	this->SetInputMode(InputMode);
+	this->SetShowMouseCursor(true);
+}
+
 void AInventoryPlayerController::FadeUI()
 {
 	this->SetInputMode(FInputModeGameOnly());
 	this->SetShowMouseCursor(false);
 	UWidgetLayoutLibrary::RemoveAllWidgets(this);
+	MainUIWidget = nullptr;
 }
