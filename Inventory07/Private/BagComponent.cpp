@@ -154,6 +154,21 @@ bool UBagComponent::SubItem(int ID, int Amount)
 void UBagComponent::SortGridItem()
 {
 	auto BagGridDatas = FGameSaveTool::GetAllBagGridDatas();
+
+	int ShortCutGridNum;
+	GConfig->GetInt(
+	TEXT("GameUIInit/MainUI/ShortCutBar"),
+	TEXT("ShortCutGridNum"),
+	ShortCutGridNum,
+	GGameIni
+	);
+	// save ShortCutDatas to operate only bag, but not both bag and shortcut
+	TArray<FBagGridData> ShortCutDatas; 
+	for (int i = 0; i < ShortCutGridNum; ++i)
+	{
+		ShortCutDatas.Add(BagGridDatas.Pop());
+	}
+	
 	
 	// TMap<id, num> all items in bag
 	TMap<int, int> AllItems;
@@ -202,6 +217,12 @@ void UBagComponent::SortGridItem()
 		NewBagGridDatas.Add(FBagGridData(0, 0));
 	}
 
+	// re-add shortcut items to NewBagGridDatas
+	while (ShortCutDatas.Num() != 0)
+	{
+		NewBagGridDatas.Add(ShortCutDatas.Pop());
+	}
+	
 	FGameSaveTool::SetAllBagGridDatas(NewBagGridDatas);
 	FGlobalEventManager::TriggerEvent(FName("SortCompleteEvent"), nullptr);
 }
