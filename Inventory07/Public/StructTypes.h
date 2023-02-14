@@ -257,6 +257,11 @@ public:
 	TArray<FName> CloseButtonIcons;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FName> SortButtonIcons;
+
+	
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName BagGridType;
 };
 

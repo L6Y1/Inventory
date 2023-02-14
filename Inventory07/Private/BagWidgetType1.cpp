@@ -49,7 +49,11 @@ void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunNam
 			BagWidgetType1Attr->BagBG,
 			BagWidgetType1Attr->CloseButtonIcons[0],
 			BagWidgetType1Attr->CloseButtonIcons[1],
-			BagWidgetType1Attr->CloseButtonIcons[2]
+			BagWidgetType1Attr->CloseButtonIcons[2],
+			BagWidgetType1Attr->SortButtonIcons[0],
+			BagWidgetType1Attr->SortButtonIcons[1],
+			BagWidgetType1Attr->SortButtonIcons[2],
+			
 		},
 		[this](TArray<UObject*> Assets)
 		{
@@ -59,20 +63,38 @@ void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunNam
 			// set bag background image
 			this->BagBorder->SetBrushFromTexture(Cast<UTexture2D>(Assets[1]));
 
-			// set button image
-			auto *ButtonStyle = &this->ExitButton->WidgetStyle;
-			auto *NormalBrush = &ButtonStyle->Normal;
-			NormalBrush->SetResourceObject(Assets[2]);
-			NormalBrush->DrawAs = ESlateBrushDrawType::Image;
+			{
+				// set close button image
+				auto *ButtonStyle = &this->ExitButton->WidgetStyle;
+				auto *NormalBrush = &ButtonStyle->Normal;
+				NormalBrush->SetResourceObject(Assets[2]);
+				NormalBrush->DrawAs = ESlateBrushDrawType::Image;
 
-			auto *HoverBrush = &ButtonStyle->Hovered;
-			HoverBrush->SetResourceObject(Assets[3]);
-			HoverBrush->DrawAs = ESlateBrushDrawType::Image;
+				auto *HoverBrush = &ButtonStyle->Hovered;
+				HoverBrush->SetResourceObject(Assets[3]);
+				HoverBrush->DrawAs = ESlateBrushDrawType::Image;
 
-			auto *PressedBrush = &ButtonStyle->Pressed;
-			PressedBrush->SetResourceObject(Assets[4]);
-			PressedBrush->DrawAs = ESlateBrushDrawType::Image;
+				auto *PressedBrush = &ButtonStyle->Pressed;
+				PressedBrush->SetResourceObject(Assets[4]);
+				PressedBrush->DrawAs = ESlateBrushDrawType::Image;
+			}
 
+			{
+				// set sort button image
+				auto *ButtonStyle = &this->SortButton->WidgetStyle;
+				auto *NormalBrush = &ButtonStyle->Normal;
+				NormalBrush->SetResourceObject(Assets[5]);
+				NormalBrush->DrawAs = ESlateBrushDrawType::Image;
+
+				auto *HoverBrush = &ButtonStyle->Hovered;
+				HoverBrush->SetResourceObject(Assets[6]);
+				HoverBrush->DrawAs = ESlateBrushDrawType::Image;
+
+				auto *PressedBrush = &ButtonStyle->Pressed;
+				PressedBrush->SetResourceObject(Assets[7]);
+				PressedBrush->DrawAs = ESlateBrushDrawType::Image;
+			}
+			
 			this->SetVisibility(ESlateVisibility::Visible);
 		}
 	);
