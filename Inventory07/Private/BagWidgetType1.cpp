@@ -4,7 +4,7 @@
 #include "BagWidgetType1.h"
 
 #include <Asset.h>
-
+#include "PaperSprite.h"
 #include "BagGridDragDropOperation.h"
 #include "DataTableTool.h"
 #include "StructTypes.h"
@@ -61,7 +61,21 @@ void UBagWidgetType1::Init(FName SkinType, UUserWidget *Owner, FName CloseFunNam
 			this->TitleImage->SetBrushFromTexture(Cast<UTexture2D>(Assets[0]));
 			
 			// set bag background image
-			this->BagBorder->SetBrushFromTexture(Cast<UTexture2D>(Assets[1]));
+			auto Sprite = Cast<UPaperSprite>(Assets[1]);
+			if (Sprite != nullptr)
+			{
+				const FSlateAtlasData SpriteAtlasData = Sprite->GetSlateAtlasData();
+				const FVector2D SpriteSize = SpriteAtlasData.GetSourceDimensions();
+
+				FSlateBrush Brush;
+				Brush.SetResourceObject(Sprite);
+				Brush.ImageSize = FVector2D(SpriteSize.X, SpriteSize.Y);
+				this->BagBorder->SetBrush(Brush);
+			}
+			else
+			{
+				this->BagBorder->SetBrushFromTexture(Cast<UTexture2D>(Assets[1]));
+			}
 
 			{
 				// set close button image

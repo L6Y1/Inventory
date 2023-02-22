@@ -14,13 +14,13 @@
 AInventory07GameMode::AInventory07GameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("Blueprint'/Game/ModularMedievalNPC/Character/Blueprints/BP_CustomizableCharacter.BP_CustomizableCharacter'"));
-	if (PlayerPawnBPClass.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("Blueprint'/Game/Blueprints/BP_InventoryCharacter.BP_InventoryCharacter_C'"));
+	if (PlayerPawnBPClass.Succeeded())
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 	PlayerControllerClass = AInventoryPlayerController::StaticClass();
-
+	
 	FGlobalEventManager::RegisterEvent(FName("EndPickupItemFromGroundEvent"), this, FName("EndPickupItemFromGround"));
 	// FGlobalEventManager::RegisterEvent(FName("SpawnItemOnGroundEvent"), this, FName("SpawnItemOnGround"));
 
@@ -29,7 +29,7 @@ AInventory07GameMode::AInventory07GameMode()
 void AInventory07GameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// create items on ground
 	auto ItemOnGroundDatas = FGameSaveTool::GetItemOnGroundDatas();
 	for (auto KeyValuePair : ItemOnGroundDatas)

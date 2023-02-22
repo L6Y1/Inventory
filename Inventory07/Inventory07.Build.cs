@@ -12,7 +12,8 @@ public class Inventory07 : ModuleRules
 			new string[]
 			{
 				"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay",
-				"UMG", "SlateCore", "Json", "interactive" 
+				"UMG", "SlateCore", "Json", "interactive",
+				"Paper2D"
 				
 			});
 	}
